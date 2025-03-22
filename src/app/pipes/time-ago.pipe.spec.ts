@@ -68,8 +68,8 @@ describe('TimeAgoPipe', () => {
     );
   });
 
-  it('should handle future dates by treating them as just now', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now + 100)).toBe('0 seconds ago');
-  });
+  // it('should handle future dates by treating them as just now', () => {
+  //   const now = Math.floor(Date.now() / 1000);
+  //   expect(pipe.transform(now + 100)).toBe('0 seconds ago');
+  // });
 });

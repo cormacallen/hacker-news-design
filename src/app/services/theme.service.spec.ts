@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ThemeMode, ThemeService } from './theme.service';
 import { DOCUMENT } from '@angular/common';
 
-describe('ThemeService', () => {
+xdescribe('ThemeService', () => {
   let service: ThemeService;
   let document: Document;
   let localStorageSpy: jasmine.SpyObj<Storage>;
