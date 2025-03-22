@@ -1,31 +1,29 @@
 import {
   Component,
   OnInit,
-  AfterViewInit,
   inject,
   DestroyRef,
   Renderer2,
   ElementRef,
-  viewChild, // Import the new signal-based viewChild
+  viewChild,
   signal,
   effect,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 import {
   HackerNewsService,
   StoryType,
 } from '../../services/hacker-news.service';
 import { StoryItemComponent } from '../story-item/story-item.component';
 import { Story } from '../../interfaces/story';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-story-list',
+  standalone: true,
   imports: [CommonModule, StoryItemComponent],
   templateUrl: './story-list.component.html',
   styleUrl: './story-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryListComponent implements OnInit {
   private hackerNewsService = inject(HackerNewsService);
@@ -101,20 +99,31 @@ export class StoryListComponent implements OnInit {
     });
   }
 
-  switchTab(tab: StoryType): void {
-    if (this.activeTab() !== tab) {
-      this.activeTab.set(tab);
-      this.hasMoreStories.set(true); // Reset this flag for the new tab
-      this.loading.set(true);
-      this.loadingMore.set(false);
-      this.error.set(null);
-      this.loadStories(false); // false means don't load more, start fresh
+  private tabSwitchInProgress = false;
+  private currentTabRequest: StoryType | null = null;
 
-      // Scroll the selected tab into view
-      setTimeout(() => {
-        this.scrollActiveTabIntoView();
-      }, 0);
+  switchTab(tab: StoryType): void {
+    // Prevent tab switching if one is already in progress
+    if (this.tabSwitchInProgress || this.activeTab() === tab) {
+      return;
     }
+
+    this.tabSwitchInProgress = true;
+    this.currentTabRequest = tab;
+    this.activeTab.set(tab); // Update UI immediately
+    this.hasMoreStories.set(true);
+    this.loading.set(true);
+    this.loadingMore.set(false);
+    this.error.set(null);
+    this.stories.set([]);
+
+    // Load stories for the new tab
+    this.loadStories(false);
+
+    // Scroll the selected tab into view
+    setTimeout(() => {
+      this.scrollActiveTabIntoView();
+    }, 0);
   }
 
   switchTabAndCloseDropdown(tab: StoryType): void {
@@ -134,11 +143,7 @@ export class StoryListComponent implements OnInit {
   loadStories(loadMore = false): void {
     // If not loading more, reset to initial state
     if (!loadMore) {
-      this.loading.set(true);
-      this.error.set(null);
       this.currentPage.set(1);
-      this.stories.set([]);
-      this.loadingMore.set(false);
     } else {
       // For loading more, we don't want to show the main loading indicator
       // but a separate "loading more" indicator
@@ -148,36 +153,59 @@ export class StoryListComponent implements OnInit {
     // Calculate pagination parameters
     const page = loadMore ? this.currentPage() : 1;
     const limit = this.storiesPerPage;
+    const requestedTab = this.activeTab();
 
     this.hackerNewsService
-      .getStories(this.activeTab(), page, limit)
+      .getStories(requestedTab, page, limit)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (newStories) => {
-          if (loadMore) {
-            // Append new stories to existing ones
-            this.stories.update((existingStories) => [
-              ...existingStories,
-              ...newStories,
-            ]);
-            // Increment the page counter for next load
-            this.currentPage.update((page) => page + 1);
-          } else {
-            // Replace existing stories
-            this.stories.set(newStories);
-            this.currentPage.set(2); // Next page to load would be 2
+          // Only update if this is still the current tab
+          if (requestedTab === this.activeTab()) {
+            if (loadMore) {
+              // Append new stories to existing ones
+              this.stories.update((existingStories) => [
+                ...existingStories,
+                ...newStories,
+              ]);
+              // Increment the page counter for next load
+              this.currentPage.update((page) => page + 1);
+            } else {
+              // Replace existing stories
+              this.stories.set(newStories);
+              this.currentPage.set(2); // Next page to load would be 2
+            }
+
+            // Check if we received fewer stories than requested (indicating end of list)
+            this.hasMoreStories.set(newStories.length === limit);
           }
 
-          // Check if we received fewer stories than requested (indicating end of list)
-          this.hasMoreStories.set(newStories.length === limit);
+          // Always clear loading states
           this.loading.set(false);
           this.loadingMore.set(false);
+
+          // If this completes the current tab switch, release the lock
+          if (this.currentTabRequest === requestedTab) {
+            this.tabSwitchInProgress = false;
+            this.currentTabRequest = null;
+          }
         },
         error: (err) => {
           console.error('Error fetching stories:', err);
-          this.error.set('Failed to load stories. Please try again.');
+
+          // Only show error if this is still the current tab
+          if (requestedTab === this.activeTab()) {
+            this.error.set('Failed to load stories. Please try again.');
+          }
+
           this.loading.set(false);
           this.loadingMore.set(false);
+
+          // Release the lock on error too
+          if (this.currentTabRequest === requestedTab) {
+            this.tabSwitchInProgress = false;
+            this.currentTabRequest = null;
+          }
         },
       });
   }
