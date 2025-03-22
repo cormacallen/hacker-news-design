@@ -1,0 +1,21 @@
+.theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--text-color);
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: var(--hover-bg);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid var(--focus-color);
+      outline-offset: 2px;
+    }
+  }

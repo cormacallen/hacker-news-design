@@ -1,0 +1,134 @@
+<div class="story-list-container">
+  <!-- Tabs and dropdown with enhanced styling -->
+  <div class="tabs-outer-container">
+    <div
+      class="tabs-scroll-indicator tabs-scroll-indicator-left"
+      [class.visible]="showLeftIndicator()"
+      (click)="scrollTabsLeft()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </div>
+
+    <nav
+      class="tabs-container"
+      aria-label="Story categories"
+      #tabsContainer
+      (scroll)="updateScrollIndicators()"
+    >
+      <div class="tabs" role="tablist">
+        @for (tab of tabs; track tab.id) {
+          <button
+            class="tab"
+            role="tab"
+            [class.active]="activeTab() === tab.id"
+            [attr.aria-selected]="activeTab() === tab.id"
+            [attr.aria-controls]="'tab-content-' + tab.id"
+            [id]="'tab-' + tab.id"
+            (click)="switchTab(tab.id)"
+          >
+            <span>{{ tab.label }}</span>
+          </button>
+        }
+      </div>
+    </nav>
+
+    <div
+      class="tabs-scroll-indicator tabs-scroll-indicator-right"
+      [class.visible]="showRightIndicator()"
+      (click)="scrollTabsRight()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </div>
+
+    <!-- Enhanced dropdown for very small screens -->
+    <div class="tabs-dropdown-container">
+      <button
+        class="tabs-dropdown-button"
+        [attr.aria-label]="
+          'Currently viewing ' +
+          getCurrentTabLabel() +
+          ' stories. Click to change category.'
+        "
+        [attr.aria-expanded]="dropdownOpen()"
+        (click)="toggleDropdown()"
+      >
+        <span>{{ getCurrentTabLabel() }} Stories</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [style.transform]="dropdownOpen() ? 'rotate(180deg)' : 'rotate(0)'"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
+      <div class="tabs-dropdown-menu" [class.open]="dropdownOpen()" role="menu">
+        @for (tab of tabs; track tab.id) {
+          <button
+            class="tabs-dropdown-item"
+            [class.active]="activeTab() === tab.id"
+            role="menuitem"
+            (click)="switchTabAndCloseDropdown(tab.id)"
+          >
+            {{ tab.label }} Stories
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab content area -->
+  <div
+    class="tab-content"
+    [attr.aria-labelledby]="'tab-' + activeTab()"
+    [id]="'tab-content-' + activeTab()"
+  >
+    <!-- Stories grid and other content -->
+    @if (loading()) {
+      <div class="loading-container" aria-live="polite">
+        <div class="loading-spinner"></div>
+        <p>Loading stories...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error-container" aria-live="assertive">
+        <p>{{ error() }}</p>
+        <button (click)="loadStories()">Try Again</button>
+      </div>
+    } @else if (stories().length === 0) {
+      <div class="empty-state">
+        <p>No stories found.</p>
+      </div>
+    } @else {
+      <div class="stories-grid">
+        @for (story of stories(); track story.id; let i = $index) {
+          <app-story-item [story]="story" [index]="i + 1"></app-story-item>
+        }
+      </div>
+    }
+  </div>
+</div>
