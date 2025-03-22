@@ -9,6 +9,7 @@ import {
   viewChild, // Import the new signal-based viewChild
   signal,
   effect,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -24,6 +25,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, StoryItemComponent],
   templateUrl: './story-list.component.html',
   styleUrl: './story-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryListComponent implements OnInit {
   private hackerNewsService = inject(HackerNewsService);

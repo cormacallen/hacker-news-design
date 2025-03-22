@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Story } from '../../interfaces/story';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
@@ -9,6 +9,7 @@ import { HostNamePipe } from '../../pipes/host-name.pipe';
   imports: [CommonModule, TimeAgoPipe, HostNamePipe],
   templateUrl: './story-item.component.html',
   styleUrl: './story-item.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryItemComponent {
   story = input.required<Story>();
