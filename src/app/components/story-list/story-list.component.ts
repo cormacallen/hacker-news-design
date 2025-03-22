@@ -38,8 +38,6 @@ export class StoryListComponent implements OnInit {
   error = signal<string | null>(null);
   activeTab = signal<StoryType>('top');
   dropdownOpen = signal<boolean>(false);
-  showLeftIndicator = signal<boolean>(false);
-  showRightIndicator = signal<boolean>(true);
   currentPage = signal<number>(1);
   readonly storiesPerPage = 30;
   hasMoreStories = signal<boolean>(true);
@@ -55,26 +53,11 @@ export class StoryListComponent implements OnInit {
   ];
 
   constructor() {
-    // Set up effect to handle tab scrolling and indicators after view initialization
+    // Set up effect to handle tab scrolling after view initialization
     effect(() => {
       const containerElement = this.tabsContainer();
 
       if (containerElement) {
-        // Initial scroll indicators update
-        this.updateScrollIndicators();
-
-        // Set up resize observer
-        const resizeObserver = new ResizeObserver(() => {
-          this.updateScrollIndicators();
-        });
-
-        resizeObserver.observe(containerElement.nativeElement);
-
-        // Cleanup observer on component destroy
-        this.destroyRef.onDestroy(() => {
-          resizeObserver.disconnect();
-        });
-
         // Scroll active tab into view
         setTimeout(() => {
           this.scrollActiveTabIntoView();
@@ -216,26 +199,6 @@ export class StoryListComponent implements OnInit {
     }
   }
 
-  updateScrollIndicators(): void {
-    const containerElement = this.tabsContainer()?.nativeElement;
-    if (!containerElement) return;
-
-    const hasHorizontalScrollbar =
-      containerElement.scrollWidth > containerElement.clientWidth;
-
-    // Only show indicators if there's a scrollbar
-    if (hasHorizontalScrollbar) {
-      this.showLeftIndicator.set(containerElement.scrollLeft > 0);
-      this.showRightIndicator.set(
-        containerElement.scrollLeft <
-          containerElement.scrollWidth - containerElement.clientWidth - 1,
-      );
-    } else {
-      this.showLeftIndicator.set(false);
-      this.showRightIndicator.set(false);
-    }
-  }
-
   scrollActiveTabIntoView(): void {
     const containerElement = this.tabsContainer()?.nativeElement;
     if (!containerElement) return;
@@ -252,32 +215,6 @@ export class StoryListComponent implements OnInit {
         left: Math.max(0, scrollLeft),
         behavior: 'smooth',
       });
-
-      this.updateScrollIndicators();
     }
-  }
-
-  scrollTabsLeft(): void {
-    const containerElement = this.tabsContainer()?.nativeElement;
-    if (!containerElement) return;
-
-    containerElement.scrollBy({
-      left: -200,
-      behavior: 'smooth',
-    });
-
-    setTimeout(() => this.updateScrollIndicators(), 300);
-  }
-
-  scrollTabsRight(): void {
-    const containerElement = this.tabsContainer()?.nativeElement;
-    if (!containerElement) return;
-
-    containerElement.scrollBy({
-      left: 200,
-      behavior: 'smooth',
-    });
-
-    setTimeout(() => this.updateScrollIndicators(), 300);
   }
 }

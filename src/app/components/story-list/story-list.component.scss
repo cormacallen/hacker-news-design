@@ -13,28 +13,23 @@
     padding: 0.5rem;
     box-shadow: var(--card-shadow);
     
-    /* Hide dropdown on larger screens */
-    .tabs-dropdown-container {
-      display: none;
-    }
-    
-    /* Show tabs on larger screens */
+    /* Show tabs on larger screens, hide dropdown */
     .tabs-container {
       display: block;
     }
     
-    /* On very small screens, switch to dropdown */
-    @media (max-width: 480px) {
+    .tabs-dropdown-container {
+      display: none;
+    }
+    
+    /* On smaller screens, hide tabs, show dropdown */
+    @media (max-width: 640px) {
       .tabs-container {
         display: none;
       }
       
       .tabs-dropdown-container {
         display: block;
-      }
-      
-      .tabs-scroll-indicator {
-        display: none;
       }
     }
   }
@@ -57,19 +52,17 @@
     
     /* Improve touch scrolling */
     scroll-behavior: smooth;
-    scroll-snap-type: x proximity;
   }
   
   .tabs {
     display: inline-flex;
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     padding: 0 0.5rem;
     align-items: center;
-    justify-content: center;
   }
   
   .tab {
-    flex: 1;
     padding: 0.5rem 1rem;
     color: var(--text-muted);
     font-weight: 500;
@@ -79,7 +72,6 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    scroll-snap-align: start;
     position: relative;
     margin: 0 0.25rem;
     min-width: 80px; /* Touch-friendly minimum width */
@@ -115,58 +107,7 @@
     }
   }
   
-  /* Scroll indicators */
-  .tabs-scroll-indicator {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: all 0.2s ease;
-    z-index: 1;
-    cursor: pointer;
-    
-    &.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    
-    svg {
-      background-color: var(--card-bg);
-      border-radius: 50%;
-      padding: 8px;
-      width: 36px;
-      height: 36px;
-      box-shadow: var(--card-shadow);
-      color: var(--text-color);
-      transition: all 0.2s ease;
-      stroke-width: 1.5;
-    }
-    
-    &:hover svg {
-      background-color: var(--hover-bg);
-      transform: scale(1.05);
-    }
-    
-    &:active svg {
-      transform: scale(0.95);
-    }
-    
-    &-left {
-      left: -4px;
-    }
-    
-    &-right {
-      right: -4px;
-    }
-  }
-  
-  /* Dropdown for very small screens - Enhanced version */
+  /* Dropdown for small screens */
   .tabs-dropdown-container {
     position: relative;
     margin-bottom: 1rem;

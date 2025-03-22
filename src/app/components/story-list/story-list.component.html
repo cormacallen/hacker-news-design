@@ -1,29 +1,7 @@
 <section class="story-list-container">
   <div class="tabs-outer-container">
-    <div
-      class="tabs-scroll-indicator tabs-scroll-indicator-left"
-      [class.visible]="showLeftIndicator()"
-      (click)="scrollTabsLeft()"
-      aria-hidden="true"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </div>
-
-    <nav
-      class="tabs-container"
-      aria-label="Story categories"
-      #tabsContainer
-      (scroll)="updateScrollIndicators()"
-    >
+    <!-- Show tabs by default on larger screens -->
+    <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
       <div class="tabs" role="tablist">
         @for (tab of tabs; track tab.id) {
           <button
@@ -41,25 +19,7 @@
       </div>
     </nav>
 
-    <div
-      class="tabs-scroll-indicator tabs-scroll-indicator-right"
-      [class.visible]="showRightIndicator()"
-      (click)="scrollTabsRight()"
-      aria-hidden="true"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </div>
-
-    <!-- Enhanced dropdown for very small screens -->
+    <!-- Show dropdown only on small screens -->
     <div class="tabs-dropdown-container">
       <button
         class="tabs-dropdown-button"
@@ -109,7 +69,7 @@
     </div>
   </div>
 
-  <!-- Tab content area -->
+  <!-- Tab content area - unchanged -->
   <div
     class="tab-content"
     [attr.aria-labelledby]="'tab-' + activeTab()"
