@@ -129,6 +129,39 @@
           <app-story-item [story]="story" [index]="i + 1"></app-story-item>
         }
       </div>
+      <div class="load-more-container">
+        @if (hasMoreStories()) {
+          <button
+            class="load-more-button"
+            (click)="loadMoreStories()"
+            [disabled]="loading()"
+            aria-live="polite"
+          >
+            @if (loading()) {
+              <div class="button-spinner"></div>
+              <span>Loading more stories...</span>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="7 13 12 18 17 13"></polyline>
+                <polyline points="7 6 12 11 17 6"></polyline>
+              </svg>
+              <span>Load More Stories</span>
+            }
+          </button>
+        } @else if (stories().length > 0) {
+          <p class="end-message">You've reached the end of the list</p>
+        }
+      </div>
     }
   </div>
 </div>

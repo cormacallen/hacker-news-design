@@ -40,6 +40,10 @@ export class StoryListComponent implements OnInit {
   dropdownOpen = signal<boolean>(false);
   showLeftIndicator = signal<boolean>(false);
   showRightIndicator = signal<boolean>(true);
+  currentPage = signal<number>(1);
+  readonly storiesPerPage = 30;
+  hasMoreStories = signal<boolean>(true);
+  loadingMore = signal<boolean>(false);
 
   tabs = [
     { id: 'top' as StoryType, label: 'Top' },
@@ -98,9 +102,11 @@ export class StoryListComponent implements OnInit {
   switchTab(tab: StoryType): void {
     if (this.activeTab() !== tab) {
       this.activeTab.set(tab);
+      this.hasMoreStories.set(true); // Reset this flag for the new tab
       this.loading.set(true);
+      this.loadingMore.set(false);
       this.error.set(null);
-      this.loadStories();
+      this.loadStories(false); // false means don't load more, start fresh
 
       // Scroll the selected tab into view
       setTimeout(() => {
@@ -123,24 +129,61 @@ export class StoryListComponent implements OnInit {
     return currentTab?.label || 'Stories';
   }
 
-  loadStories(): void {
-    this.loading.set(true);
-    this.error.set(null);
+  loadStories(loadMore = false): void {
+    // If not loading more, reset to initial state
+    if (!loadMore) {
+      this.loading.set(true);
+      this.error.set(null);
+      this.currentPage.set(1);
+      this.stories.set([]);
+      this.loadingMore.set(false);
+    } else {
+      // For loading more, we don't want to show the main loading indicator
+      // but a separate "loading more" indicator
+      this.loadingMore.set(true);
+    }
+
+    // Calculate pagination parameters
+    const page = loadMore ? this.currentPage() : 1;
+    const limit = this.storiesPerPage;
 
     this.hackerNewsService
-      .getStories(this.activeTab())
+      .getStories(this.activeTab(), page, limit)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (stories) => {
-          this.stories.set(stories);
+        next: (newStories) => {
+          if (loadMore) {
+            // Append new stories to existing ones
+            this.stories.update((existingStories) => [
+              ...existingStories,
+              ...newStories,
+            ]);
+            // Increment the page counter for next load
+            this.currentPage.update((page) => page + 1);
+          } else {
+            // Replace existing stories
+            this.stories.set(newStories);
+            this.currentPage.set(2); // Next page to load would be 2
+          }
+
+          // Check if we received fewer stories than requested (indicating end of list)
+          this.hasMoreStories.set(newStories.length === limit);
           this.loading.set(false);
+          this.loadingMore.set(false);
         },
         error: (err) => {
           console.error('Error fetching stories:', err);
           this.error.set('Failed to load stories. Please try again.');
           this.loading.set(false);
+          this.loadingMore.set(false);
         },
       });
+  }
+
+  loadMoreStories(): void {
+    if (!this.loading() && !this.loadingMore() && this.hasMoreStories()) {
+      this.loadStories(true);
+    }
   }
 
   updateScrollIndicators(): void {

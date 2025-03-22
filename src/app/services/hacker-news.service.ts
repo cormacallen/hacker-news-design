@@ -14,11 +14,20 @@ export class HackerNewsService {
 
   constructor(private http: HttpClient) {}
 
-  getStories(storyType: StoryType, limit: number = 30): Observable<Story[]> {
+  getStories(
+    storyType: StoryType,
+    page: number = 1,
+    limit: number = 30,
+  ): Observable<Story[]> {
     return this.http
       .get<number[]>(`${this.baseUrl}/${storyType}stories.json`)
       .pipe(
-        map((ids) => ids.slice(0, limit)),
+        map((ids) => {
+          // Calculate start and end indices for pagination
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
+          return ids.slice(startIndex, endIndex);
+        }),
         switchMap((ids) => {
           if (ids.length === 0) {
             return of([]);
