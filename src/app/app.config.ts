@@ -1,12 +1,7 @@
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-} from '@angular/common/http';
-import { provideClientHydration } from '@angular/platform-browser';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 // For better performance in production
@@ -15,14 +10,9 @@ import { provideZoneChangeDetection } from '@angular/core';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(
-      routes,
-      withViewTransitions(), // Enable smooth transitions between routes
+      routes, // Enable smooth transitions between routes
     ),
-    provideHttpClient(
-      withFetch(), // Use fetch API for HTTP requests
-    ),
-    provideAnimations(), // For animations
-
+    provideHttpClient(),
     // Enable zone.js optimizations
     provideZoneChangeDetection({
       eventCoalescing: true, // Coalesce multiple change detection passes
