@@ -1,24 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-theme-toggle',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './theme-toggle.component.html',
   styleUrl: './theme-toggle.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemeToggleComponent {
   themeService = inject(ThemeService);
 
   getAriaLabel(): string {
-    const currentMode = this.themeService.themeMode();
-    if (currentMode === 'light') {
-      return 'Switch to dark mode';
-    } else if (currentMode === 'dark') {
-      return 'Switch to system theme';
-    } else {
-      return 'Switch to light mode';
-    }
+    return this.themeService.isDarkMode()
+      ? 'Switch to light mode'
+      : 'Switch to dark mode';
   }
 }

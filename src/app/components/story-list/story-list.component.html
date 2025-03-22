@@ -1,10 +1,10 @@
-<div class="story-list-container">
-  <!-- Tabs and dropdown with enhanced styling -->
+<section class="story-list-container">
   <div class="tabs-outer-container">
     <div
       class="tabs-scroll-indicator tabs-scroll-indicator-left"
       [class.visible]="showLeftIndicator()"
       (click)="scrollTabsLeft()"
+      aria-hidden="true"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +45,7 @@
       class="tabs-scroll-indicator tabs-scroll-indicator-right"
       [class.visible]="showRightIndicator()"
       (click)="scrollTabsRight()"
+      aria-hidden="true"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -82,12 +83,18 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           [style.transform]="dropdownOpen() ? 'rotate(180deg)' : 'rotate(0)'"
+          aria-hidden="true"
         >
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
 
-      <div class="tabs-dropdown-menu" [class.open]="dropdownOpen()" role="menu">
+      <div
+        class="tabs-dropdown-menu"
+        [class.open]="dropdownOpen()"
+        role="menu"
+        [attr.aria-hidden]="!dropdownOpen()"
+      >
         @for (tab of tabs; track tab.id) {
           <button
             class="tabs-dropdown-item"
@@ -107,20 +114,38 @@
     class="tab-content"
     [attr.aria-labelledby]="'tab-' + activeTab()"
     [id]="'tab-content-' + activeTab()"
+    role="tabpanel"
   >
     <!-- Stories grid and other content -->
     @if (loading()) {
       <div class="loading-container" aria-live="polite">
-        <div class="loading-spinner"></div>
+        <div class="loading-spinner" aria-hidden="true"></div>
         <p>Loading stories...</p>
       </div>
     } @else if (error()) {
       <div class="error-container" aria-live="assertive">
         <p>{{ error() }}</p>
-        <button (click)="loadStories()">Try Again</button>
+        <button (click)="loadStories()" class="retry-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Try Again
+        </button>
       </div>
     } @else if (stories().length === 0) {
-      <div class="empty-state">
+      <div class="empty-state" aria-live="polite">
         <p>No stories found.</p>
       </div>
     } @else {
@@ -134,11 +159,11 @@
           <button
             class="load-more-button"
             (click)="loadMoreStories()"
-            [disabled]="loading()"
+            [disabled]="loading() || loadingMore()"
             aria-live="polite"
           >
-            @if (loading()) {
-              <div class="button-spinner"></div>
+            @if (loadingMore()) {
+              <div class="button-spinner" aria-hidden="true"></div>
               <span>Loading more stories...</span>
             } @else {
               <svg
@@ -151,6 +176,7 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                aria-hidden="true"
               >
                 <polyline points="7 13 12 18 17 13"></polyline>
                 <polyline points="7 6 12 11 17 6"></polyline>
@@ -164,4 +190,4 @@
       </div>
     }
   </div>
-</div>
+</section>

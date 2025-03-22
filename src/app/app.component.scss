@@ -6,10 +6,6 @@
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
   }
-
-  main {
-    margin: auto;
-  }
   
   .app-header {
     background-color: var(--header-bg);
@@ -38,7 +34,6 @@
     }
     
     .logo-icon {
-      color: var(--accent-color);
       margin-right: 0.5rem;
     }
     
@@ -60,6 +55,8 @@
   
   main {
     flex: 1;
+    margin: 1rem auto;
+    width: 100%;
   }
   
   .app-footer {
@@ -70,7 +67,7 @@
   }
   
   .footer-content {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     text-align: center;
     color: var(--text-muted);
@@ -83,6 +80,22 @@
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+  
+  // Skip link for accessibility
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent-color);
+    color: white;
+    padding: 8px;
+    z-index: 1000;
+    transition: top 0.2s;
+    
+    &:focus {
+      top: 0;
     }
   }
   

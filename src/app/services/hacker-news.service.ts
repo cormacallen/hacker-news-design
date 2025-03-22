@@ -11,6 +11,9 @@ export type StoryType = 'top' | 'new' | 'best' | 'ask' | 'show' | 'job';
 })
 export class HackerNewsService {
   private baseUrl = 'https://hacker-news.firebaseio.com/v0';
+  private cache = new Map<string, any>();
+  private cacheExpiry = new Map<string, number>();
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   constructor(private http: HttpClient) {}
 
@@ -19,6 +22,13 @@ export class HackerNewsService {
     page: number = 1,
     limit: number = 30,
   ): Observable<Story[]> {
+    const cacheKey = `${storyType}_${page}_${limit}`;
+    const cached = this.getCachedData(cacheKey);
+
+    if (cached) {
+      return of(cached);
+    }
+
     return this.http
       .get<number[]>(`${this.baseUrl}/${storyType}stories.json`)
       .pipe(
@@ -33,17 +43,58 @@ export class HackerNewsService {
             return of([]);
           }
           const storyRequests = ids.map((id) =>
-            this.http
-              .get<Story>(`${this.baseUrl}/item/${id}.json`)
-              .pipe(catchError(() => of(null))),
+            this.getStoryCached(id).pipe(catchError(() => of(null))),
           );
           return forkJoin(storyRequests);
         }),
-        map((stories) => stories.filter((story) => story !== null) as Story[]),
+        map((stories) => {
+          const filteredStories = stories.filter(
+            (story) => story !== null,
+          ) as Story[];
+          this.setCachedData(cacheKey, filteredStories);
+          return filteredStories;
+        }),
+        catchError((error) => {
+          console.error('Error fetching stories:', error);
+          return of([]);
+        }),
       );
   }
 
-  getStory(id: number): Observable<Story> {
-    return this.http.get<Story>(`${this.baseUrl}/item/${id}.json`);
+  getStoryCached(id: number): Observable<Story> {
+    const cacheKey = `story_${id}`;
+    const cached = this.getCachedData(cacheKey);
+
+    if (cached) {
+      return of(cached);
+    }
+
+    return this.http.get<Story>(`${this.baseUrl}/item/${id}.json`).pipe(
+      map((story) => {
+        this.setCachedData(cacheKey, story);
+        return story;
+      }),
+    );
+  }
+
+  private getCachedData(key: string): any | null {
+    if (this.cache.has(key)) {
+      const expiryTime = this.cacheExpiry.get(key) || 0;
+
+      if (Date.now() < expiryTime) {
+        return this.cache.get(key);
+      } else {
+        // Clean up expired cache
+        this.cache.delete(key);
+        this.cacheExpiry.delete(key);
+      }
+    }
+
+    return null;
+  }
+
+  private setCachedData(key: string, data: any): void {
+    this.cache.set(key, data);
+    this.cacheExpiry.set(key, Date.now() + this.CACHE_DURATION);
   }
 }

@@ -1,13 +1,17 @@
-/* Enhanced styling for tabs navigation and dropdown */
-
-/* Tabs outer container */
-.tabs-outer-container {
+.story-list-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .tabs-outer-container {
     position: relative;
-    margin-bottom: var(--spacing-6);
-    background-color: var(--bg-color-subtle);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-2);
-    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    background-color: var(--card-bg);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    box-shadow: var(--card-shadow);
     
     /* Hide dropdown on larger screens */
     .tabs-dropdown-container {
@@ -21,10 +25,6 @@
     
     /* On very small screens, switch to dropdown */
     @media (max-width: 480px) {
-      padding: 0;
-      background-color: transparent;
-      box-shadow: none;
-      
       .tabs-container {
         display: none;
       }
@@ -48,7 +48,7 @@
     -ms-overflow-style: none; /* IE/Edge */
     white-space: nowrap;
     position: relative;
-    padding: var(--spacing-1) 0;
+    padding: 0.25rem 0;
     
     /* Hide scrollbar */
     &::-webkit-scrollbar {
@@ -62,25 +62,27 @@
   
   .tabs {
     display: inline-flex;
-    padding: 0 var(--spacing-2);
+    width: 100%;
+    padding: 0 0.5rem;
     align-items: center;
+    justify-content: center;
   }
   
   .tab {
-    padding: var(--spacing-2) var(--spacing-4);
+    flex: 1;
+    padding: 0.5rem 1rem;
     color: var(--text-muted);
-    font-weight: var(--font-weight-medium);
+    font-weight: 500;
     border: none;
     background: none;
-    border-radius: var(--radius-md);
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all 0.2s ease;
     white-space: nowrap;
     scroll-snap-align: start;
     position: relative;
+    margin: 0 0.25rem;
     min-width: 80px; /* Touch-friendly minimum width */
-    height: 40px;
-    margin: 0 var(--spacing-1);
     
     &:hover {
       background-color: var(--hover-bg);
@@ -91,7 +93,7 @@
     &.active {
       color: var(--accent-color);
       background-color: var(--accent-bg);
-      font-weight: var(--font-weight-semibold);
+      font-weight: 600;
       box-shadow: 0 2px 8px rgba(255, 102, 0, 0.15);
       
       &::after {
@@ -103,31 +105,13 @@
         width: 20px;
         height: 3px;
         background-color: var(--accent-color);
-        border-radius: var(--radius-full);
+        border-radius: 9999px;
       }
     }
     
     &:focus-visible {
       outline: 2px solid var(--focus-color);
       outline-offset: 2px;
-    }
-    
-    /* Touch feedback */
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: currentColor;
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: inherit;
-    }
-    
-    &:active::before {
-      opacity: 0.1;
     }
   }
   
@@ -143,7 +127,7 @@
     justify-content: center;
     pointer-events: none;
     opacity: 0;
-    transition: all var(--transition-fast);
+    transition: all 0.2s ease;
     z-index: 1;
     cursor: pointer;
     
@@ -158,9 +142,9 @@
       padding: 8px;
       width: 36px;
       height: 36px;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--card-shadow);
       color: var(--text-color);
-      transition: all var(--transition-fast);
+      transition: all 0.2s ease;
       stroke-width: 1.5;
     }
     
@@ -185,7 +169,7 @@
   /* Dropdown for very small screens - Enhanced version */
   .tabs-dropdown-container {
     position: relative;
-    margin-bottom: var(--spacing-4);
+    margin-bottom: 1rem;
   }
   
   .tabs-dropdown-button {
@@ -193,46 +177,45 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: 0.75rem 1rem;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-color-emphasis);
-    transition: all var(--transition-fast);
-    box-shadow: var(--shadow-sm);
+    border-radius: 0.75rem;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    box-shadow: var(--card-shadow);
     
     svg {
-      transition: transform var(--transition-fast);
+      transition: transform 0.2s ease;
       color: var(--accent-color);
     }
     
     &:hover {
       background-color: var(--hover-bg);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
+      box-shadow: var(--card-shadow-hover);
     }
     
     &:active {
-      transform: translateY(0);
+      transform: translateY(1px);
     }
   }
   
   .tabs-dropdown-menu {
     position: absolute;
-    top: calc(100% + var(--spacing-2));
+    top: calc(100% + 0.5rem);
     left: 0;
     right: 0;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow-hover);
     z-index: 100;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transform: translateY(-10px);
-    transition: all var(--transition-normal);
+    transition: all 0.3s ease;
     
     &.open {
       max-height: 300px;
@@ -246,11 +229,14 @@
     align-items: center;
     width: 100%;
     text-align: left;
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: 0.75rem 1rem;
     color: var(--text-color);
-    transition: all var(--transition-fast);
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    border: none;
+    background: none;
+    cursor: pointer;
     
     &::before {
       content: '';
@@ -266,7 +252,7 @@
     
     &:hover {
       background-color: var(--hover-bg);
-      padding-left: var(--spacing-6);
+      padding-left: 1.5rem;
       
       &::before {
         animation: sweep 1s forwards;
@@ -277,7 +263,7 @@
     &.active {
       color: var(--accent-color);
       background-color: var(--accent-bg);
-      font-weight: var(--font-weight-semibold);
+      font-weight: 600;
       
       &::after {
         content: '';
@@ -303,36 +289,109 @@
       left: 100%;
     }
   }
-
-/* Load more */
-.load-more-container {
+  
+  /* Stories grid */
+  .stories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Loading state */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-muted);
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    border-top-color: var(--accent-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  /* Error state */
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--error-color);
+    text-align: center;
+    
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .retry-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--card-bg);
+    color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: var(--hover-bg);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  /* Empty state */
+  .empty-state {
     display: flex;
     justify-content: center;
-    margin: var(--spacing-6) 0;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  
+  /* Load more */
+  .load-more-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
   }
   
   .load-more-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-2);
-    padding: var(--spacing-3) var(--spacing-6);
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
     background-color: var(--card-bg);
     color: var(--accent-color);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-weight-medium);
-    transition: all var(--transition-fast);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
     box-shadow: var(--card-shadow);
     
     svg {
-      transition: transform var(--transition-fast);
+      transition: transform 0.2s ease;
     }
     
     &:hover {
       background-color: var(--hover-bg);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--card-shadow-hover);
       
       svg {
         transform: translateY(2px);
@@ -362,7 +421,7 @@
   .end-message {
     color: var(--text-muted);
     font-style: italic;
-    padding: var(--spacing-3);
+    padding: 0.75rem;
     text-align: center;
   }
   

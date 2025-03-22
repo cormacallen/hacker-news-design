@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'hostName',
+  standalone: true,
 })
 export class HostNamePipe implements PipeTransform {
   transform(url: string | null | undefined): string {

@@ -1,3 +1,5 @@
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <div class="app-container" [class.dark-mode]="themeService.isDarkMode()">
   <header class="app-header">
     <div class="header-content">
@@ -9,6 +11,7 @@
             class="logo-icon"
             width="24"
             height="24"
+            aria-hidden="true"
           >
             <rect width="24" height="24" rx="3" fill="#FF6600" />
             <path
@@ -17,12 +20,6 @@
               stroke="white"
               stroke-width="0.2"
               stroke-linejoin="round"
-            />
-            <path
-              d="M3 3v2m0-2h2M3 21v-2m0 2h2M21 3v2m0-2h-2M21 21v-2m0 2h-2"
-              stroke="rgba(255,255,255,0.5)"
-              stroke-width="0.75"
-              stroke-linecap="round"
             />
           </svg>
           <span class="logo-text">Hacker<span class="accent">News</span></span>
@@ -34,7 +31,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <router-outlet></router-outlet>
   </main>
 
@@ -49,7 +46,7 @@
         >
           Hacker News
         </a>
-        using Angular 18 and the
+        using Angular 19 and the
         <a
           href="https://github.com/HackerNews/API"
           target="_blank"

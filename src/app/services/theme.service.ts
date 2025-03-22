@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { effect } from '@angular/core';
 
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark';
 
 @Injectable({
   providedIn: 'root',
@@ -11,52 +11,37 @@ export class ThemeService {
   private systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
   // Use signal for reactive theme state
-  themeMode = signal<ThemeMode>(this.getSavedTheme());
-  isDarkMode = signal<boolean>(this.calculateIsDarkMode());
+  isDarkMode = signal<boolean>(this.getInitialTheme());
 
   constructor() {
     // Set up effect to update theme when signal changes
     effect(() => {
-      const mode = this.themeMode();
-      this.saveTheme(mode);
-      this.isDarkMode.set(this.calculateIsDarkMode());
+      this.saveThemePreference(this.isDarkMode());
       this.applyTheme();
     });
 
-    // Listen for system theme changes
-    this.systemDarkMode.addEventListener('change', () => {
-      if (this.themeMode() === 'system') {
-        this.isDarkMode.set(this.systemDarkMode.matches);
-        this.applyTheme();
-      }
-    });
+    // Initial theme application
+    this.applyTheme();
   }
 
   toggleTheme(): void {
-    const currentMode = this.themeMode();
-    if (currentMode === 'light') {
-      this.themeMode.set('dark');
-    } else if (currentMode === 'dark') {
-      this.themeMode.set('system');
-    } else {
-      this.themeMode.set('light');
+    this.isDarkMode.update((isDark) => !isDark);
+  }
+
+  private getInitialTheme(): boolean {
+    // Check for saved preference
+    const savedPreference = localStorage.getItem(this.THEME_KEY);
+
+    if (savedPreference !== null) {
+      return savedPreference === 'dark';
     }
+
+    // Default to system preference if no saved preference
+    return this.systemDarkMode.matches;
   }
 
-  private getSavedTheme(): ThemeMode {
-    return (localStorage.getItem(this.THEME_KEY) as ThemeMode) || 'system';
-  }
-
-  private saveTheme(mode: ThemeMode): void {
-    localStorage.setItem(this.THEME_KEY, mode);
-  }
-
-  private calculateIsDarkMode(): boolean {
-    const mode = this.themeMode();
-    if (mode === 'system') {
-      return this.systemDarkMode.matches;
-    }
-    return mode === 'dark';
+  private saveThemePreference(isDark: boolean): void {
+    localStorage.setItem(this.THEME_KEY, isDark ? 'dark' : 'light');
   }
 
   private applyTheme(): void {

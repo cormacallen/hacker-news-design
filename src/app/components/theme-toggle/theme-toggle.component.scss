@@ -8,14 +8,23 @@
     padding: 8px;
     border-radius: 50%;
     color: var(--text-color);
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
     
     &:hover {
       background-color: var(--hover-bg);
+      transform: rotate(15deg);
+    }
+    
+    &:active {
+      transform: scale(0.9);
     }
     
     &:focus-visible {
       outline: 2px solid var(--focus-color);
       outline-offset: 2px;
+    }
+    
+    svg {
+      transition: transform 0.3s;
     }
   }
