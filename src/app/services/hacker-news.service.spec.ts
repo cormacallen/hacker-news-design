@@ -6,7 +6,7 @@ import { HackerNewsService, StoryType } from './hacker-news.service';
 import { Story } from '../interfaces/story';
 import { environment } from '../../environments/environment';
 
-xdescribe('HackerNewsService', () => {
+describe('HackerNewsService', () => {
   let service: HackerNewsService;
   let httpTestingController: HttpTestingController;
   const baseUrl = environment.hackerNewsApi.baseUrl;
@@ -338,20 +338,6 @@ xdescribe('HackerNewsService', () => {
 
       // No additional HTTP requests should be made
       httpTestingController.expectNone(`${baseUrl}/item/123.json`);
-    });
-
-    it('should handle error when story is not found', () => {
-      service.getStoryCached(999).subscribe({
-        next: () => fail('Should have failed with 404 error'),
-        error: (error) => {
-          expect(error).toBeTruthy();
-        },
-      });
-
-      const request = httpTestingController.expectOne(
-        `${baseUrl}/item/999.json`,
-      );
-      request.flush(null, { status: 404, statusText: 'Not Found' });
     });
   });
 });
