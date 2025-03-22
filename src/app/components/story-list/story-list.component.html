@@ -1,4 +1,10 @@
 <section class="story-list-container">
+  <header>
+    <h1 class="visually-hidden">
+      {{ getCurrentTabLabel() }} Stories on Hacker News
+    </h1>
+  </header>
+
   <div class="tabs-outer-container">
     <!-- Show tabs by default on larger screens -->
     <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
@@ -12,6 +18,7 @@
             [attr.aria-controls]="'tab-content-' + tab.id"
             [id]="'tab-' + tab.id"
             (click)="switchTab(tab.id)"
+            [attr.aria-label]="tab.ariaLabel"
           >
             <span>{{ tab.label }}</span>
           </button>
@@ -69,20 +76,24 @@
     </div>
   </div>
 
-  <!-- Tab content area - unchanged -->
+  <!-- Tab content area -->
   <div
     class="tab-content"
     [attr.aria-labelledby]="'tab-' + activeTab()"
     [id]="'tab-content-' + activeTab()"
     role="tabpanel"
+    [attr.aria-label]="getTabAriaLabel()"
   >
-    <!-- Stories grid and other content -->
+    <!-- Loading state -->
     @if (loading()) {
       <div class="loading-container" aria-live="polite">
         <div class="loading-spinner" aria-hidden="true"></div>
-        <p>Loading stories...</p>
+        <p>Loading {{ getCurrentTabLabel().toLowerCase() }} stories...</p>
       </div>
-    } @else if (error()) {
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
       <div class="error-container" aria-live="assertive">
         <p>{{ error() }}</p>
         <button (click)="loadStories()" class="retry-button">
@@ -104,16 +115,30 @@
           Try Again
         </button>
       </div>
-    } @else if (stories().length === 0) {
+    }
+
+    <!-- Empty state -->
+    @else if (stories().length === 0) {
       <div class="empty-state" aria-live="polite">
-        <p>No stories found.</p>
+        <p>
+          No stories found in the
+          {{ getCurrentTabLabel().toLowerCase() }} category.
+        </p>
       </div>
-    } @else {
-      <div class="stories-grid">
+    }
+
+    <!-- Stories list -->
+    @else {
+      <div
+        class="stories-grid"
+        [attr.aria-label]="getCurrentTabLabel() + ' stories list'"
+      >
         @for (story of stories(); track story.id; let i = $index) {
           <app-story-item [story]="story" [index]="i + 1"></app-story-item>
         }
       </div>
+
+      <!-- Load more / end of list -->
       <div class="load-more-container">
         @if (hasMoreStories()) {
           <button

@@ -1,21 +1,17 @@
-<article class="story-card">
+<article
+  class="story-card"
+  [attr.aria-labelledby]="'story-title-' + story().id"
+>
   <div class="story-rank" aria-hidden="true">{{ index() }}</div>
   <div class="story-content">
     <header class="story-header">
-      <h2 class="story-title">
-        <a
-          [href]="
-            story().url || 'https://news.ycombinator.com/item?id=' + story().id
-          "
-          target="_blank"
-          rel="noopener"
-          [attr.aria-label]="'Read the story: ' + story().title"
-        >
+      <h2 class="story-title" [id]="'story-title-' + story().id">
+        <a [href]="storyUrl()" target="_blank" rel="noopener">
           {{ story().title }}
         </a>
       </h2>
       @if (story().url) {
-        <span class="story-domain">({{ story().url | hostName }})</span>
+        <span class="story-domain"> ({{ story().url | hostName }}) </span>
       }
     </header>
     <footer class="story-meta">
@@ -37,9 +33,9 @@
               points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
             ></polygon>
           </svg>
-          <span>{{ story().score }}</span>
+          <span>{{ story().score }}</span> points
         </span>
-        <span class="story-author" title="Author">
+        <span class="story-author" title="Posted by">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -55,7 +51,7 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          <span>{{ story().by }}</span>
+          by {{ story().by }}
         </span>
         <span class="story-time" title="Posted time">
           <svg
@@ -73,17 +69,15 @@
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <span>{{ story().time | timeAgo }}</span>
+          {{ story().time | timeAgo }}
         </span>
       </div>
       <a
         class="story-comments"
-        href="https://news.ycombinator.com/item?id={{ story().id }}"
+        [href]="commentsUrl()"
         target="_blank"
         rel="noopener"
-        [attr.aria-label]="
-          'View ' + story().descendants + ' comments on Hacker News'
-        "
+        [attr.aria-label]="(story().descendants || 0) + ' comments'"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

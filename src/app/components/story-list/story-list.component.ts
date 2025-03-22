@@ -8,6 +8,7 @@ import {
   viewChild,
   signal,
   effect,
+  afterNextRender,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -17,6 +18,13 @@ import {
 } from '../../services/hacker-news.service';
 import { StoryItemComponent } from '../story-item/story-item.component';
 import { Story } from '../../interfaces/story';
+import { Title } from '@angular/platform-browser';
+
+interface StoryTab {
+  id: StoryType;
+  label: string;
+  ariaLabel: string;
+}
 
 @Component({
   selector: 'app-story-list',
@@ -29,27 +37,31 @@ export class StoryListComponent implements OnInit {
   private hackerNewsService = inject(HackerNewsService);
   private destroyRef = inject(DestroyRef);
   private renderer = inject(Renderer2);
+  private titleService = inject(Title);
 
   // Using the signal-based viewChild approach
   readonly tabsContainer = viewChild<ElementRef<HTMLElement>>('tabsContainer');
 
+  // Signals for reactive state management
   stories = signal<Story[]>([]);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
   activeTab = signal<StoryType>('top');
   dropdownOpen = signal<boolean>(false);
   currentPage = signal<number>(1);
-  readonly storiesPerPage = 30;
   hasMoreStories = signal<boolean>(true);
   loadingMore = signal<boolean>(false);
+  lastLoadTime = signal<number>(Date.now());
 
-  tabs = [
-    { id: 'top' as StoryType, label: 'Top' },
-    { id: 'new' as StoryType, label: 'New' },
-    { id: 'best' as StoryType, label: 'Best' },
-    { id: 'ask' as StoryType, label: 'Ask HN' },
-    { id: 'show' as StoryType, label: 'Show HN' },
-    { id: 'job' as StoryType, label: 'Jobs' },
+  readonly storiesPerPage = 30;
+
+  tabs: StoryTab[] = [
+    { id: 'top', label: 'Top', ariaLabel: 'Top stories' },
+    { id: 'new', label: 'New', ariaLabel: 'New stories' },
+    { id: 'best', label: 'Best', ariaLabel: 'Best stories' },
+    { id: 'ask', label: 'Ask HN', ariaLabel: 'Ask Hacker News stories' },
+    { id: 'show', label: 'Show HN', ariaLabel: 'Show Hacker News stories' },
+    { id: 'job', label: 'Jobs', ariaLabel: 'Job postings' },
   ];
 
   constructor() {
@@ -64,11 +76,28 @@ export class StoryListComponent implements OnInit {
         }, 0);
       }
     });
+
+    // Set up effect for updating the page title based on active tab
+    effect(() => {
+      const currentTab = this.tabs.find((tab) => tab.id === this.activeTab());
+      if (currentTab) {
+        this.titleService.setTitle(
+          `${currentTab.label} Stories | Hacker News Redesigned`,
+        );
+      }
+    });
+
+    // Initialize UI after DOM is ready
+    afterNextRender(() => {
+      this.setupEventListeners();
+    });
   }
 
   ngOnInit(): void {
     this.loadStories();
+  }
 
+  setupEventListeners(): void {
     // Close dropdown when clicking outside
     this.renderer.listen('document', 'click', (event: Event) => {
       const dropdownEl = document.querySelector('.tabs-dropdown-container');
@@ -80,13 +109,52 @@ export class StoryListComponent implements OnInit {
         this.dropdownOpen.set(false);
       }
     });
+
+    // Keyboard navigation for tabs
+    this.renderer.listen('document', 'keydown', (event: KeyboardEvent) => {
+      // Only handle keyboard events when tabs are focused
+      const activeElement = document.activeElement;
+      if (!activeElement || !activeElement.classList.contains('tab')) {
+        return;
+      }
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        const currentIndex = this.tabs.findIndex(
+          (tab) => tab.id === this.activeTab(),
+        );
+
+        let newIndex;
+        if (event.key === 'ArrowRight') {
+          newIndex = (currentIndex + 1) % this.tabs.length;
+        } else {
+          newIndex = (currentIndex - 1 + this.tabs.length) % this.tabs.length;
+        }
+
+        this.switchTab(this.tabs[newIndex].id);
+
+        // Focus the new tab
+        setTimeout(() => {
+          const newTabElement = document.getElementById(
+            `tab-${this.tabs[newIndex].id}`,
+          );
+          if (newTabElement) {
+            newTabElement.focus();
+          }
+        }, 50);
+      }
+    });
   }
 
   private tabSwitchInProgress = false;
   private currentTabRequest: StoryType | null = null;
 
+  /**
+   * Switch to a different tab/category
+   * @param tab Tab ID to switch to
+   */
   switchTab(tab: StoryType): void {
-    // Prevent tab switching if one is already in progress
+    // Prevent tab switching if one is already in progress or same tab
     if (this.tabSwitchInProgress || this.activeTab() === tab) {
       return;
     }
@@ -109,27 +177,40 @@ export class StoryListComponent implements OnInit {
     }, 0);
   }
 
+  /**
+   * Switch tab and close dropdown menu
+   * @param tab Tab ID to switch to
+   */
   switchTabAndCloseDropdown(tab: StoryType): void {
     this.switchTab(tab);
     this.dropdownOpen.set(false);
   }
 
+  /**
+   * Toggle dropdown menu for mobile view
+   */
   toggleDropdown(): void {
     this.dropdownOpen.update((value) => !value);
   }
 
+  /**
+   * Get the label of the current active tab
+   * @returns Current tab label
+   */
   getCurrentTabLabel(): string {
     const currentTab = this.tabs.find((tab) => tab.id === this.activeTab());
     return currentTab?.label || 'Stories';
   }
 
+  /**
+   * Load stories from API
+   * @param loadMore Whether to load more stories or reset
+   */
   loadStories(loadMore = false): void {
     // If not loading more, reset to initial state
     if (!loadMore) {
       this.currentPage.set(1);
     } else {
-      // For loading more, we don't want to show the main loading indicator
-      // but a separate "loading more" indicator
       this.loadingMore.set(true);
     }
 
@@ -143,6 +224,8 @@ export class StoryListComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (newStories) => {
+          this.lastLoadTime.set(Date.now());
+
           // Only update if this is still the current tab
           if (requestedTab === this.activeTab()) {
             if (loadMore) {
@@ -160,7 +243,7 @@ export class StoryListComponent implements OnInit {
             }
 
             // Check if we received fewer stories than requested (indicating end of list)
-            this.hasMoreStories.set(newStories.length === limit);
+            this.hasMoreStories.set(newStories.length >= limit);
           }
 
           // Always clear loading states
@@ -193,12 +276,18 @@ export class StoryListComponent implements OnInit {
       });
   }
 
+  /**
+   * Load more stories (pagination)
+   */
   loadMoreStories(): void {
     if (!this.loading() && !this.loadingMore() && this.hasMoreStories()) {
       this.loadStories(true);
     }
   }
 
+  /**
+   * Scroll active tab into view for better UX
+   */
   scrollActiveTabIntoView(): void {
     const containerElement = this.tabsContainer()?.nativeElement;
     if (!containerElement) return;
@@ -216,5 +305,13 @@ export class StoryListComponent implements OnInit {
         behavior: 'smooth',
       });
     }
+  }
+
+  /**
+   * Get the ARIA label for the current tab content
+   */
+  getTabAriaLabel(): string {
+    const currentTab = this.tabs.find((tab) => tab.id === this.activeTab());
+    return currentTab?.ariaLabel || 'Stories';
   }
 }
