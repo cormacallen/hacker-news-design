@@ -9,4 +9,6 @@ export interface Story {
   kids?: number[];
   type: string;
   text?: string;
+  dead?: boolean;
+  deleted?: boolean;
 }

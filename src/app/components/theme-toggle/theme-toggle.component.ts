@@ -11,10 +11,4 @@ import { ThemeService } from '../../services/theme.service';
 })
 export class ThemeToggleComponent {
   themeService = inject(ThemeService);
-
-  getAriaLabel(): string {
-    return this.themeService.isDarkMode()
-      ? 'Switch to light mode'
-      : 'Switch to dark mode';
-  }
 }

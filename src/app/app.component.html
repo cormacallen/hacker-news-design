@@ -1,60 +1,12 @@
-<a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="app-container" [class.dark-theme]="themeService.isDarkMode()">
+  <!-- Skip link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="app-container" [class.dark-mode]="themeService.isDarkMode()">
-  <header class="app-header">
-    <div class="header-content">
-      <div class="logo">
-        <a routerLink="/" aria-label="Hacker News Redesigned">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            class="logo-icon"
-            width="24"
-            height="24"
-            aria-hidden="true"
-          >
-            <rect width="24" height="24" rx="3" fill="#FF6600" />
-            <path
-              d="M7 6h2.5L12 11l2.5-5H17l-4.5 8v5h-3v-5z"
-              fill="white"
-              stroke="white"
-              stroke-width="0.2"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <span class="logo-text">Hacker<span class="accent">News</span></span>
-        </a>
-      </div>
-      <div class="header-actions">
-        <app-theme-toggle></app-theme-toggle>
-      </div>
-    </div>
-  </header>
+  <app-header></app-header>
 
-  <main id="main-content">
+  <main id="main-content" class="main-content">
     <router-outlet></router-outlet>
   </main>
 
-  <footer class="app-footer">
-    <div class="footer-content">
-      <p>
-        A redesign of
-        <a
-          href="https://news.ycombinator.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Hacker News
-        </a>
-        using Angular 19 and the
-        <a
-          href="https://github.com/HackerNews/API"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Official HN API
-        </a>
-      </p>
-    </div>
-  </footer>
+  <app-footer></app-footer>
 </div>

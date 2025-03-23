@@ -1,18 +1,13 @@
-<section class="story-list-container">
-  <header>
-    <h1 class="visually-hidden">
-      {{ getCurrentTabLabel() }} Stories on Hacker News
-    </h1>
-  </header>
-
-  <div class="tabs-outer-container">
-    <!-- Show tabs by default on larger screens -->
+<div class="story-list-container">
+  <!-- Filter bar with tabs -->
+  <header class="filter-bar">
     <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
       <div class="tabs" role="tablist">
         @for (tab of tabs; track tab.id) {
           <button
             class="tab"
             role="tab"
+            [disabled]="tabsDisabled() || activeTab() === tab.id"
             [class.active]="activeTab() === tab.id"
             [attr.aria-selected]="activeTab() === tab.id"
             [attr.aria-controls]="'tab-content-' + tab.id"
@@ -26,153 +21,88 @@
       </div>
     </nav>
 
-    <!-- Show dropdown only on small screens -->
-    <div class="tabs-dropdown-container">
-      <button
-        class="tabs-dropdown-button"
-        [attr.aria-label]="
-          'Currently viewing ' +
-          getCurrentTabLabel() +
-          ' stories. Click to change category.'
-        "
-        [attr.aria-expanded]="dropdownOpen()"
-        (click)="toggleDropdown()"
-      >
-        <span>{{ getCurrentTabLabel() }} Stories</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          [style.transform]="dropdownOpen() ? 'rotate(180deg)' : 'rotate(0)'"
-          aria-hidden="true"
-        >
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </button>
-
-      <div
-        class="tabs-dropdown-menu"
-        [class.open]="dropdownOpen()"
-        role="menu"
-        [attr.aria-hidden]="!dropdownOpen()"
+    <!-- Mobile dropdown selector -->
+    <div class="tabs-dropdown">
+      <select
+        [ngModel]="activeTab()"
+        (ngModelChange)="switchTab($event)"
+        aria-label="Select story category"
+        class="tab-select"
       >
         @for (tab of tabs; track tab.id) {
-          <button
-            class="tabs-dropdown-item"
-            [class.active]="activeTab() === tab.id"
-            role="menuitem"
-            (click)="switchTabAndCloseDropdown(tab.id)"
-          >
-            {{ tab.label }} Stories
-          </button>
+          <option [value]="tab.id">{{ tab.label }}</option>
         }
-      </div>
+      </select>
+      <span class="material-icons dropdown-icon" aria-hidden="true"
+        >arrow_drop_down</span
+      >
     </div>
-  </div>
+  </header>
 
-  <!-- Tab content area -->
   <div
     class="tab-content"
     [attr.aria-labelledby]="'tab-' + activeTab()"
     [id]="'tab-content-' + activeTab()"
     role="tabpanel"
-    [attr.aria-label]="getTabAriaLabel()"
   >
     <!-- Loading state -->
     @if (loading()) {
-      <div class="loading-container" aria-live="polite">
+      <div class="loading-state" aria-live="polite">
         <div class="loading-spinner" aria-hidden="true"></div>
-        <p>Loading {{ getCurrentTabLabel().toLowerCase() }} stories...</p>
+        <p>Loading {{ getCurrentTabLabel() }} stories...</p>
       </div>
     }
-
     <!-- Error state -->
     @else if (error()) {
-      <div class="error-container" aria-live="assertive">
+      <div class="error-state" aria-live="assertive">
         <p>{{ error() }}</p>
         <button (click)="loadStories()" class="retry-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
+          <span class="material-icons icon-retry" aria-hidden="true"
+            >refresh</span
           >
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-          </svg>
           Try Again
         </button>
       </div>
     }
-
     <!-- Empty state -->
     @else if (stories().length === 0) {
       <div class="empty-state" aria-live="polite">
-        <p>
-          No stories found in the
-          {{ getCurrentTabLabel().toLowerCase() }} category.
-        </p>
+        <p>No stories found in the {{ getCurrentTabLabel() }} category.</p>
       </div>
     }
-
     <!-- Stories list -->
     @else {
       <div
-        class="stories-grid"
-        [attr.aria-label]="getCurrentTabLabel() + ' stories list'"
+        class="stories-list"
+        [attr.aria-label]="getCurrentTabLabel() + ' stories'"
       >
         @for (story of stories(); track story.id; let i = $index) {
           <app-story-item [story]="story" [index]="i + 1"></app-story-item>
         }
       </div>
 
-      <!-- Load more / end of list -->
-      <div class="load-more-container">
+      <!-- Pagination / Load More -->
+      <div class="pagination">
         @if (hasMoreStories()) {
           <button
             class="load-more-button"
-            (click)="loadMoreStories()"
-            [disabled]="loading() || loadingMore()"
+            (click)="loadStories(true)"
+            [disabled]="loadingMore()"
             aria-live="polite"
           >
             @if (loadingMore()) {
               <div class="button-spinner" aria-hidden="true"></div>
-              <span>Loading more stories...</span>
+              <span>Loading...</span>
             } @else {
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="7 13 12 18 17 13"></polyline>
-                <polyline points="7 6 12 11 17 6"></polyline>
-              </svg>
-              <span>Load More Stories</span>
+              <span>Load More</span>
             }
           </button>
-        } @else if (stories().length > 0) {
-          <p class="end-message">You've reached the end of the list</p>
+        } @else {
+          <p class="end-of-list">
+            You've reached the end of stories in this category
+          </p>
         }
       </div>
     }
   </div>
-</section>
+</div>

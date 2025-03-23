@@ -1,126 +1,114 @@
-.story-card {
-    display: flex;
-    padding: 1rem;
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow-hover);
-    }
-  }
-  
-  .story-rank {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
-    margin-right: 1rem;
-    background-color: var(--accent-color);
-    color: var(--accent-text);
-    border-radius: 0.25rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    flex-shrink: 0;
-  }
-  
-  .story-content {
-    flex: 1;
-    display: flex;
+.story-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  margin-bottom: 1rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.story-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.story-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.story-header {
+  margin-bottom: 0.5rem;
+}
+
+.story-title {
+  display: inline;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.story-title a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.story-title a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.story-domain {
+  margin-left: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.story-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.story-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.story-points, .story-author, .story-time, .story-comments {
+  display: flex;
+  align-items: center;
+}
+
+.story-comments {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.story-comments:hover {
+  text-decoration: underline;
+}
+
+.icon {
+  margin-right: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .story-stats {
     flex-direction: column;
-  }
-  
-  .story-header {
-    margin-bottom: 0.5rem;
-  }
-  
-  .story-title {
-    display: inline;
-    font-size: 1.125rem;
-    font-weight: 600;
-    line-height: 1.4;
-    margin: 0;
-    
-    a {
-      color: var(--text-color);
-      text-decoration: none;
-      
-      &:hover, &:focus {
-        color: var(--accent-color);
-        text-decoration: underline;
-      }
-    }
-  }
-  
-  .story-domain {
-    margin-left: 0.5rem;
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    font-weight: 400;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
   
   .story-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-  }
-  
-  .story-stats {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .story-points, .story-author, .story-time, .story-comments {
-    display: flex;
-    align-items: center;
-    
-    svg {
-      margin-right: 0.25rem;
-    }
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
   
   .story-comments {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    
-    &:hover {
-      text-decoration: underline;
-    }
+    align-self: flex-end;
   }
-  
-  @media (max-width: 640px) {
-    .story-card {
-      padding: 0.75rem;
-    }
-    
-    .story-title {
-      font-size: 1rem;
-    }
-    
-    .story-stats {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25rem;
-    }
-    
-    .story-meta {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    
-    .story-comments {
-      align-self: flex-end;
-    }
-  }
+}

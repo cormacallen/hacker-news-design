@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoryItemComponent } from './story-item.component';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { HostNamePipe } from '../../pipes/host-name.pipe';
-import { Story } from '../../interfaces/story';
+import { Story } from '../../interfaces/story.interface';
 import { Component } from '@angular/core';
 
 // Create a test host component to properly provide inputs to the StoryItemComponent
@@ -84,40 +84,5 @@ describe('StoryItemComponent', () => {
     expect(storyComponent.storyUrl()).toBe(
       `https://news.ycombinator.com/item?id=123`,
     );
-  });
-
-  it('should compute correct story type label', () => {
-    // Regular external story
-    expect(storyComponent.storyTypeLabel()).toBe('External article');
-
-    // Self post
-    hostComponent.story = { ...hostComponent.story, url: undefined };
-    hostFixture.detectChanges();
-    expect(storyComponent.storyTypeLabel()).toBe('Text post');
-
-    // Ask HN
-    hostComponent.story = {
-      ...hostComponent.story,
-      title: 'Ask HN: What is your favorite programming language?',
-    };
-    hostFixture.detectChanges();
-    expect(storyComponent.storyTypeLabel()).toBe('Ask Hacker News post');
-
-    // Show HN
-    hostComponent.story = {
-      ...hostComponent.story,
-      title: 'Show HN: My side project',
-    };
-    hostFixture.detectChanges();
-    expect(storyComponent.storyTypeLabel()).toBe('Show Hacker News post');
-
-    // GitHub link
-    hostComponent.story = {
-      ...hostComponent.story,
-      url: 'https://github.com/user/repo',
-      title: 'Test Story',
-    };
-    hostFixture.detectChanges();
-    expect(storyComponent.storyTypeLabel()).toBe('GitHub repository');
   });
 });

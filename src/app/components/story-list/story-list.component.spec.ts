@@ -8,14 +8,13 @@ import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { StoryListComponent } from './story-list.component';
 import { HackerNewsService } from '../../services/hacker-news.service';
-import { Story } from '../../interfaces/story';
+import { Story } from '../../interfaces/story.interface';
 import { StoryItemComponent } from '../story-item/story-item.component';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { HostNamePipe } from '../../pipes/host-name.pipe';
 import { Title } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
-import { signal } from '@angular/core';
 
 describe('StoryListComponent', () => {
   let component: StoryListComponent;
@@ -111,8 +110,6 @@ describe('StoryListComponent', () => {
         (component.error as any).set(updates.error);
       if (updates.activeTab !== undefined)
         (component.activeTab as any).set(updates.activeTab);
-      if (updates.dropdownOpen !== undefined)
-        (component.dropdownOpen as any).set(updates.dropdownOpen);
       if (updates.currentPage !== undefined)
         (component.currentPage as any).set(updates.currentPage);
       if (updates.hasMoreStories !== undefined)
@@ -120,11 +117,6 @@ describe('StoryListComponent', () => {
       if (updates.loadingMore !== undefined)
         (component.loadingMore as any).set(updates.loadingMore);
     };
-
-    // Create a helper for accessing the mock Element APIs that would be used internally
-    component.scrollActiveTabIntoView = jasmine.createSpy(
-      'scrollActiveTabIntoView',
-    );
 
     fixture.detectChanges();
   });
@@ -287,7 +279,7 @@ describe('StoryListComponent', () => {
     hackerNewsServiceSpy.getStories.calls.reset();
 
     // Call the loadMoreStories method directly
-    component.loadMoreStories();
+    component.loadStories(true);
     tick();
 
     // Should call getStories with page 2
@@ -297,17 +289,4 @@ describe('StoryListComponent', () => {
       component.storiesPerPage,
     );
   }));
-
-  it('should toggle the dropdown menu', () => {
-    // Initially dropdown should be closed
-    expect(component.dropdownOpen()).toBe(false);
-
-    // Toggle dropdown
-    component.toggleDropdown();
-    expect(component.dropdownOpen()).toBe(true);
-
-    // Toggle again
-    component.toggleDropdown();
-    expect(component.dropdownOpen()).toBe(false);
-  });
 });

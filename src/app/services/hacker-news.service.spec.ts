@@ -3,7 +3,7 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HackerNewsService, StoryType } from './hacker-news.service';
-import { Story } from '../interfaces/story';
+import { Story } from '../interfaces/story.interface';
 import { environment } from '../../environments/environment';
 
 describe('HackerNewsService', () => {

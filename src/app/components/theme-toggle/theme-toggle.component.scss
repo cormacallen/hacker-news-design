@@ -1,30 +1,21 @@
 .theme-toggle {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-radius: 50%;
-    color: var(--text-color);
-    transition: background-color 0.2s, transform 0.2s;
-    
-    &:hover {
-      background-color: var(--hover-bg);
-      transform: rotate(15deg);
-    }
-    
-    &:active {
-      transform: scale(0.9);
-    }
-    
-    &:focus-visible {
-      outline: 2px solid var(--focus-color);
-      outline-offset: 2px;
-    }
-    
-    svg {
-      transition: transform 0.3s;
-    }
-  }
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  border-radius: 50%;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--hover-bg);
+  transform: rotate(15deg);
+}
+
+.theme-toggle:active {
+  transform: scale(0.9);
+}

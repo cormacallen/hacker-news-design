@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Story } from '../../interfaces/story';
+import { Story } from '../../interfaces/story.interface';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { HostNamePipe } from '../../pipes/host-name.pipe';
 
@@ -16,12 +16,12 @@ export class StoryItemComponent {
   index = input.required<number>();
 
   /**
-   * Determine if the story is a self-post (no external URL)
+   * Determine if story is a self-post (no external URL)
    */
   isSelfPost = computed(() => !this.story().url);
 
   /**
-   * Get the URL for the story (external URL or HN discussion)
+   * Get the URL for the story (external or HN discussion)
    */
   storyUrl = computed(() => {
     return (
@@ -38,27 +38,10 @@ export class StoryItemComponent {
   });
 
   /**
-   * Get the story type label for accessibility
+   * Get accessibility label for comments link
    */
-  storyTypeLabel = computed(() => {
-    const story = this.story();
-
-    if (story.url && story.url.includes('github.com')) {
-      return 'GitHub repository';
-    }
-
-    if (story.title.startsWith('Ask HN:')) {
-      return 'Ask Hacker News post';
-    }
-
-    if (story.title.startsWith('Show HN:')) {
-      return 'Show Hacker News post';
-    }
-
-    if (story.title.startsWith('Tell HN:')) {
-      return 'Tell Hacker News post';
-    }
-
-    return story.url ? 'External article' : 'Text post';
+  storyCommentsLabel = computed(() => {
+    const count = this.story().descendants || 0;
+    return `${count} comment${count !== 1 ? 's' : ''}`;
   });
 }

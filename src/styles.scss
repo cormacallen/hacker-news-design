@@ -1,13 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-// Define CSS variables for both light and dark theme
+/* CSS Variables for Theming */
 :root {
-  // Typography
+  /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
@@ -15,7 +11,7 @@
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
   
-  // Spacing
+  /* Spacing */
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
   --spacing-3: 0.75rem;
@@ -26,95 +22,108 @@
   --spacing-10: 2.5rem;
   --spacing-12: 3rem;
   
-  // Border radius
+  /* Borders */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
   
-  // Transitions
+  /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
-  
-  // Shadows
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-// Light theme colors
+/* Light Theme Colors */
 .light-theme {
-  // Base colors
+  /* Base colors */
   --bg-color: #f8f9fa;
-  --bg-color-subtle: #f3f4f6;
   --card-bg: #ffffff;
-  --header-bg: rgba(255, 255, 255, 0.9);
+  --header-bg: rgba(255, 255, 255, 0.85);
   --footer-bg: #f3f4f6;
-  --hover-bg: #f3f4f6;
-  --text-color: #1a1c1e;
-  --text-color-emphasis: #000000;
+  --hover-bg: #f1f5f9;
+  --text-color: #1e293b;
   --text-muted: #64748b;
   
-  // Accent colors
+  /* Accent colors */
   --accent-color: #ff6600;
-  --accent-color-hover: #e25a00;
-  --accent-color-subtle: rgba(255, 102, 0, 0.1);
+  --accent-color-hover: #e65c00;
   --accent-bg: rgba(255, 102, 0, 0.1);
-  --accent-text: #ffffff;
   
-  // Utility colors
+  /* Utility colors */
   --border-color: #e2e8f0;
   --error-color: #dc2626;
   --success-color: #16a34a;
   --focus-color: rgba(59, 130, 246, 0.5);
   
-  // Shadows
-  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Shadows */
+  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-// Dark theme colors
+/* Dark Theme Colors */
 .dark-theme {
-  // Base colors
+  /* Base colors */
   --bg-color: #111827;
-  --bg-color-subtle: #1f2937;
   --card-bg: #1f2937;
   --header-bg: rgba(31, 41, 55, 0.9);
-  --footer-bg: #0f172a;
+  --footer-bg: #111827;
   --hover-bg: #374151;
-  --text-color: #e5e7eb;
-  --text-color-emphasis: #ffffff;
+  --text-color: #f1f5f9;
   --text-muted: #9ca3af;
   
-  // Accent colors
+  /* Accent colors */
   --accent-color: #ff6600;
   --accent-color-hover: #ff8533;
-  --accent-color-subtle: rgba(255, 102, 0, 0.2);
   --accent-bg: rgba(255, 102, 0, 0.15);
-  --accent-text: #ffffff;
   
-  // Utility colors
+  /* Utility colors */
   --border-color: #374151;
   --error-color: #ef4444;
   --success-color: #10b981;
   --focus-color: rgba(59, 130, 246, 0.5);
   
-  // Shadows
-  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Shadows */
+  --header-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-// Apply light theme by default
+/* Default to light theme */
 :root {
-  @extend .light-theme;
+  color-scheme: light;
 }
 
-// Global reset and base styles
+/* Material Icons Styles */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* Global reset and base styles */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -149,6 +158,7 @@ a {
   &:focus-visible {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
+    border-radius: 2px;
   }
 }
 
@@ -160,10 +170,11 @@ button {
   &:focus-visible {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
+    border-radius: 2px;
   }
 }
 
-// Utility classes
+/* Utility classes */
 .visually-hidden {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -174,7 +185,7 @@ button {
   width: 1px;
 }
 
-// Animations
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -191,18 +202,7 @@ button {
   }
 }
 
-// Apply subtle animations to story items 
-.stories-grid app-story-item {
-  animation: fadeIn 0.4s ease forwards;
-  
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.03}s;
-    }
-  }
-}
-
-// Custom scrollbar styles
+/* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -221,14 +221,7 @@ button {
   }
 }
 
-// Media queries for responsive design
-@media (min-width: 640px) {
-  .stories-grid {
-    animation-duration: 0.5s;
-  }
-}
-
-// Respect user's preference for reduced motion
+/* Respect user's preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -236,10 +229,4 @@ button {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-// Accessibility focus styles
-:focus-visible {
-  outline: 2px solid var(--focus-color);
-  outline-offset: 2px;
 }

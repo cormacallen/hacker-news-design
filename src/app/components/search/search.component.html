@@ -1,0 +1,21 @@
+<div class="search-container">
+  <form class="search-form" (submit)="onSearch($event)">
+    <input
+      name="searchQuery"
+      type="search"
+      class="search-input"
+      placeholder="Search stories..."
+      [ngModel]="searchQuery"
+      (ngModelChange)="searchQuery = $event"
+      aria-label="Search stories"
+    />
+    <button
+      type="submit"
+      class="search-button"
+      [disabled]="!searchQuery.trim()"
+      aria-label="Search"
+    >
+      <span class="material-icons" aria-hidden="true">search</span>
+    </button>
+  </form>
+</div>
