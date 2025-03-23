@@ -34,6 +34,7 @@
     "@cypress/schematic": "^3.0.0",
     "@types/cypress": "^1.1.6",
     "@types/jasmine": "~5.1.0",
+    "axe-core": "^4.10.3",
     "cypress": "^14.2.0",
     "cypress-axe": "^1.6.0",
     "jasmine-core": "~5.5.0",
