@@ -28,6 +28,7 @@
         (ngModelChange)="switchTab($event)"
         aria-label="Select story category"
         class="tab-select"
+        [disabled]="tabsDisabled()"
       >
         @for (tab of tabs; track tab.id) {
           <option [value]="tab.id">{{ tab.label }}</option>

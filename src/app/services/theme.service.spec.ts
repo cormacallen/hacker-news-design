@@ -1,52 +1,174 @@
-import { TestBed } from '@angular/core/testing';
-import { ThemeService } from './theme.service';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ThemeService, ThemeMode } from './theme.service';
+import { DOCUMENT } from '@angular/common';
 
 describe('ThemeService', () => {
-  // Skip tests that are causing issues for now
-  xit('should initialize with system preference by default', () => {});
-  xit('should load saved theme preference from localStorage', () => {});
-  xit('should save theme preference to localStorage when changed', () => {});
-  xit('should add the correct CSS classes to the document root', () => {});
-  xit('should update theme when system preference changes', () => {});
+  let service: ThemeService;
+  let documentMock: Document;
+  let localStorageMock: any = {};
+  let mediaQueryListMock: any;
 
-  // Basic test to verify service instantiation
-  it('should be created', () => {
-    // Create a minimal test environment
-    TestBed.configureTestingModule({
-      providers: [ThemeService],
+  // Helper to update the media query
+  function simulateMediaQueryChange(prefersDark: boolean) {
+    mediaQueryListMock.matches = prefersDark;
+    mediaQueryListMock.dispatchEvent(new Event('change'));
+  }
+
+  beforeEach(() => {
+    // Reset mocks for each test
+    documentMock = document.implementation.createHTMLDocument();
+    localStorageMock = {};
+    mediaQueryListMock = {
+      matches: false,
+      addEventListener: jasmine
+        .createSpy('addEventListener')
+        .and.callFake((event: string, listener: EventListener) => {
+          mediaQueryListMock.eventListener = listener;
+        }),
+      dispatchEvent: function (event: Event) {
+        if (this.eventListener) {
+          this.eventListener({ matches: this.matches } as MediaQueryListEvent);
+        }
+      },
+      eventListener: null,
+    };
+
+    // Mock localStorage
+    spyOn(Storage.prototype, 'getItem').and.callFake((key: string) => {
+      return localStorageMock[key] || null;
     });
+    spyOn(Storage.prototype, 'setItem').and.callFake(
+      (key: string, value: string) => {
+        localStorageMock[key] = value;
+      },
+    );
 
-    const service = TestBed.inject(ThemeService);
+    // Mock window.matchMedia
+    spyOn(window, 'matchMedia').and.returnValue(mediaQueryListMock);
+
+    TestBed.configureTestingModule({
+      providers: [ThemeService, { provide: DOCUMENT, useValue: documentMock }],
+    });
+  });
+
+  it('should be created', () => {
+    service = TestBed.inject(ThemeService);
     expect(service).toBeTruthy();
   });
 
-  // Test core functionality with proper mocks
-  it('should directly test core theme functionality without mocks', () => {
-    // We'll use the real service with minimal mocking
-    TestBed.configureTestingModule({
-      providers: [ThemeService],
-    });
-
-    const service = TestBed.inject(ThemeService);
-
-    // Just test the public API methods that don't depend on spies
-    expect(service.themeMode()).toBeDefined();
-
-    // Set theme and check if it changes
-    const initialTheme = service.themeMode();
-    if (initialTheme !== 'dark') {
-      service.setTheme('dark');
-      expect(service.themeMode()).toBe('dark');
-      expect(service.isDarkMode()).toBe(true);
-    } else {
-      service.setTheme('light');
-      expect(service.themeMode()).toBe('light');
-      expect(service.isDarkMode()).toBe(false);
-    }
-
-    // Test theme toggle
-    const beforeToggle = service.themeMode();
-    service.toggleTheme();
-    expect(service.themeMode()).not.toBe(beforeToggle);
+  it('should initialize with system preference by default', () => {
+    // When no localStorage value exists, 'system' should be the default
+    service = TestBed.inject(ThemeService);
+    expect(service.themeMode()).toBe('system');
+    expect(Storage.prototype.getItem).toHaveBeenCalledWith(
+      'hn-theme-preference',
+    );
   });
+
+  it('should load saved theme preference from localStorage', () => {
+    // Set up localStorage before service initialization
+    localStorageMock['hn-theme-preference'] = 'dark';
+
+    // Now create the service
+    service = TestBed.inject(ThemeService);
+
+    // Service should read from localStorage during initialization
+    expect(service.themeMode()).toBe('dark');
+    expect(Storage.prototype.getItem).toHaveBeenCalledWith(
+      'hn-theme-preference',
+    );
+  });
+
+  it('should save theme preference to localStorage when changed', fakeAsync(() => {
+    // Initialize service
+    service = TestBed.inject(ThemeService);
+
+    // Clear any initialization calls
+    (Storage.prototype.setItem as jasmine.Spy).calls.reset();
+
+    // Change theme mode by manually setting the signal
+    (service.themeMode as any).set('dark');
+    tick(); // Allow effect() to run
+
+    // Verify localStorage was updated with the new theme
+    expect(Storage.prototype.setItem).toHaveBeenCalledWith(
+      'hn-theme-preference',
+      'dark',
+    );
+  }));
+
+  it('should add the correct CSS classes to the document root', fakeAsync(() => {
+    service = TestBed.inject(ThemeService);
+    const rootElement = documentMock.documentElement;
+
+    // Initially should be light (based on our mediaQueryListMock.matches = false)
+    expect(service.isDarkMode()).toBe(false);
+
+    // Set light mode explicitly and verify classes
+    (service.themeMode as any).set('light');
+    tick(); // Allow effect() to run
+
+    // Light mode classes
+    expect(rootElement.classList.contains('light-theme')).toBe(true);
+    expect(rootElement.classList.contains('dark-theme')).toBe(false);
+    expect(rootElement.getAttribute('data-theme')).toBe('light');
+
+    // Change to dark mode
+    (service.themeMode as any).set('dark');
+    tick(); // Allow effect() to run
+
+    // Dark mode classes
+    expect(rootElement.classList.contains('dark-theme')).toBe(true);
+    expect(rootElement.classList.contains('light-theme')).toBe(false);
+    expect(rootElement.getAttribute('data-theme')).toBe('dark');
+  }));
+
+  it('should update theme when system preference changes', fakeAsync(() => {
+    service = TestBed.inject(ThemeService);
+
+    // Start with system preference
+    (service.themeMode as any).set('system');
+    tick();
+
+    // Initially should be light (since mediaQueryListMock.matches is false)
+    expect(service.isDarkMode()).toBe(false);
+
+    // Simulate system change to dark
+    simulateMediaQueryChange(true);
+    tick();
+
+    // Now should be dark
+    expect(service.isDarkMode()).toBe(true);
+
+    // Set to manual mode - should ignore system preference
+    (service.themeMode as any).set('light');
+    tick();
+    expect(service.isDarkMode()).toBe(false);
+
+    // System change should not affect manual setting
+    simulateMediaQueryChange(true);
+    tick();
+    expect(service.isDarkMode()).toBe(false);
+  }));
+
+  it('should toggle theme correctly', fakeAsync(() => {
+    service = TestBed.inject(ThemeService);
+
+    // Start in light mode
+    (service.themeMode as any).set('light');
+    tick();
+    expect(service.isDarkMode()).toBe(false);
+
+    // Toggle
+    service.toggleTheme();
+    tick();
+    expect(service.isDarkMode()).toBe(true);
+    expect(service.themeMode()).toBe('dark');
+
+    // Toggle again
+    service.toggleTheme();
+    tick();
+    expect(service.isDarkMode()).toBe(false);
+    expect(service.themeMode()).toBe('light');
+  }));
 });

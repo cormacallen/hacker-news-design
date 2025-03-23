@@ -14,7 +14,10 @@ export class SearchComponent {
     event.preventDefault();
     if (this.searchQuery.trim()) {
       // In a real implementation, this would navigate to search results
-      console.log(`Search functionality would search for: ${this.searchQuery}`);
+      console.log(
+        `Search functionality would search for: ${this.searchQuery}, 
+         and have to call http://hn.algolia.com/api/v1/search?query=`,
+      );
     }
   }
 }

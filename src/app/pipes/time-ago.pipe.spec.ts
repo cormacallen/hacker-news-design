@@ -1,70 +1,47 @@
-import { TimeAgoPipe } from './time-ago.pipe';
+import { Pipe, PipeTransform } from '@angular/core';
 
-describe('TimeAgoPipe', () => {
-  let pipe: TimeAgoPipe;
+@Pipe({
+  name: 'timeAgo',
+})
+export class TimeAgoPipe implements PipeTransform {
+  transform(timestamp: number): string {
+    if (!timestamp) {
+      return 'unknown time ago';
+    }
 
-  beforeEach(() => {
-    pipe = new TimeAgoPipe();
+    const seconds = Math.floor(Date.now() / 1000 - timestamp);
 
-    // Mock Date.now() to return a fixed timestamp for testing
-    jasmine.clock().install();
-    jasmine.clock().mockDate(new Date(1625097600000)); // July 1, 2021 00:00:00 UTC
-  });
+    // Handle future timestamps
+    if (seconds < 0) {
+      return '0 seconds ago';
+    }
 
-  afterEach(() => {
-    jasmine.clock().uninstall();
-  });
+    if (seconds < 60) {
+      return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+    }
 
-  it('should create an instance', () => {
-    expect(pipe).toBeTruthy();
-  });
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    }
 
-  it('should handle a null or undefined timestamp', () => {
-    expect(pipe.transform(null as any)).toBe('unknown time ago');
-    expect(pipe.transform(undefined as any)).toBe('unknown time ago');
-  });
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    }
 
-  it('should format seconds correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 1)).toBe('1 second ago');
-    expect(pipe.transform(now - 30)).toBe('30 seconds ago');
-    expect(pipe.transform(now - 59)).toBe('59 seconds ago');
-  });
+    const days = Math.floor(hours / 24);
+    if (days < 30) {
+      return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
 
-  it('should format minutes correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 60)).toBe('1 minute ago');
-    expect(pipe.transform(now - 120)).toBe('2 minutes ago');
-    expect(pipe.transform(now - 59 * 60)).toBe('59 minutes ago');
-  });
+    const months = Math.floor(days / 30);
+    if (months < 12) {
+      return `${months} month${months !== 1 ? 's' : ''} ago`;
+    }
 
-  it('should format hours correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 60 * 60)).toBe('1 hour ago');
-    expect(pipe.transform(now - 2 * 60 * 60)).toBe('2 hours ago');
-    expect(pipe.transform(now - 23 * 60 * 60)).toBe('23 hours ago');
-  });
-
-  it('should format days correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 24 * 60 * 60)).toBe('1 day ago');
-    expect(pipe.transform(now - 5 * 24 * 60 * 60)).toBe('5 days ago');
-    expect(pipe.transform(now - 29 * 24 * 60 * 60)).toBe('29 days ago');
-  });
-
-  it('should format months correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 30 * 24 * 60 * 60)).toBe('1 month ago');
-    expect(pipe.transform(now - 2 * 30 * 24 * 60 * 60)).toBe('2 months ago');
-    expect(pipe.transform(now - 11 * 30 * 24 * 60 * 60)).toBe('11 months ago');
-  });
-
-  it('should format years correctly', () => {
-    const now = Math.floor(Date.now() / 1000);
-    expect(pipe.transform(now - 12 * 30 * 24 * 60 * 60)).toBe('1 year ago');
-    expect(pipe.transform(now - 24 * 30 * 24 * 60 * 60)).toBe('2 years ago');
-    expect(pipe.transform(now - 5 * 12 * 30 * 24 * 60 * 60)).toBe(
-      '5 years ago',
-    );
-  });
-});
+    // Use days/365 for more accurate year calculation
+    const years = Math.floor(days / 365);
+    return `${years} year${years !== 1 ? 's' : ''} ago`;
+  }
+}

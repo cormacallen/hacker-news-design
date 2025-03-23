@@ -96,7 +96,7 @@ export class HackerNewsService {
   /**
    * Get cached data if not expired
    */
-  private getCachedData(key: string): Story[] | null {
+  getCachedData(key: string): Story[] | null {
     if (this.storiesCache.has(key)) {
       const expiryTime = this.cacheExpiry.get(key) || 0;
       if (Date.now() < expiryTime) {
