@@ -45,7 +45,6 @@ export class HackerNewsService {
     return this.http
       .get<number[]>(`${this.baseUrl}/${storyType}stories.json`)
       .pipe(
-        retry(2), // Retry failed requests up to 2 times
         map((ids) => {
           // Calculate start and end indices for pagination
           const startIndex = (page - 1) * limit;
@@ -96,7 +95,6 @@ export class HackerNewsService {
     }
 
     return this.http.get<Story>(`${this.baseUrl}/item/${id}.json`).pipe(
-      retry(2), // Retry failed requests up to 2 times
       map((story) => {
         if (!story) {
           throw new Error(`Story with ID ${id} not found`);
