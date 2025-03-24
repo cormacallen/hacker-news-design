@@ -13,7 +13,10 @@
           <rect width="24" height="24" rx="4" fill="#FF6600" />
           <path d="M7 6h2.5L12 11l2.5-5H17l-4.5 8v5h-3v-5z" fill="white" />
         </svg>
-        <span class="logo-text">Hacker<span class="accent">News</span></span>
+        <h1 class="logo-text">
+          <span>Hacker</span>
+          <span class="accent">News</span>
+        </h1>
       </a>
     </div>
 
@@ -42,11 +45,13 @@
   </div>
 
   <!-- Mobile search container (hidden by default) -->
-  <div
-    class="mobile-search-container"
-    [class.is-active]="isMobileSearchVisible()"
-    [attr.aria-hidden]="!isMobileSearchVisible()"
-  >
-    <app-search></app-search>
-  </div>
+  @if (isMobileSearchVisible()) {
+    <div
+      class="mobile-search-container"
+      [class.is-active]="isMobileSearchVisible()"
+      [attr.aria-hidden]="!isMobileSearchVisible()"
+    >
+      <app-search></app-search>
+    </div>
+  }
 </header>
