@@ -6,9 +6,5 @@ export interface Story {
   by: string;
   time: number;
   descendants: number;
-  kids?: number[];
   type: string;
-  text?: string;
-  dead?: boolean;
-  deleted?: boolean;
 }
