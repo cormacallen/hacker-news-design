@@ -29,7 +29,6 @@ A modern, accessible redesign of Hacker News built with Angular 19, utilizing th
 - **Component-Based Design**: Modular architecture with standalone components
 - **Responsive Layout**: Flexbox and media queries for multi-device support
 - **State Management**: Using signals for efficient state management
-- **Service Layer**: Separation of concerns with dedicated service for API interactions
 - **Data Caching**: Optimized data fetching with client-side caching
 - **Reactive Patterns**: Combining RxJS with Angular signals for reactive UI updates
 
