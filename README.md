@@ -41,22 +41,18 @@ A modern, accessible redesign of Hacker News built with Angular 19, utilizing th
 
 ### Installation
 
-# Install dependencies
-
 npm install
 
-# Start the development server
+### Start the development server
 
 npm start
 
 The application will be available at `http://localhost:4200`.
 
-### Testing
-
-# Run unit tests
+### Run unit tests
 
 npm test
 
-# Run end-to-end tests
+### Run end-to-end tests
 
 npm run e2e
