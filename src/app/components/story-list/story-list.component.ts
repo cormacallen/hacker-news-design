@@ -5,7 +5,6 @@ import {
   DestroyRef,
   viewChild,
   signal,
-  effect,
   ElementRef,
   OnDestroy,
 } from '@angular/core';

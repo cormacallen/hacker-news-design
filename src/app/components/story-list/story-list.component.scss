@@ -2,16 +2,19 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem;
 }
 
 .filter-bar {
-  margin: 1rem 0;
+  margin: 0 0;
   position: relative;
-  border-radius: 8px;
   background-color: var(--card-bg);
-  padding: 0.5rem;
-  box-shadow: var(--card-shadow);
+  background-color: #000;
+  margin-bottom: 1rem;
+  nav {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }
 
 .tabs-container {
@@ -31,26 +34,29 @@
 }
 
 .tab {
-  padding: 0.5rem 1rem;
+  padding: 0.9rem 1rem;
   border: none;
   background: none;
-  color: var(--text-muted);
+  color: #efefef;
   font-size: 0.9rem;
-  font-weight: 500;
-  border-radius: 6px;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s ease;
+  border-bottom: 5px solid #000;
+  span {
+    position: relative;
+    top: 2px;
+  }
 }
 
 .tab:hover {
-  background-color: var(--hover-bg);
-  color: var(--text-color);
+  background-color: #111827;
 }
 
 .tab.active {
-  background-color: var(--accent-bg);
-  color: var(--accent-color);
-  font-weight: 600;
+  color: #fff;
+  font-weight: 700;
+  border-bottom: 4px solid var(--accent-color);
 }
 
 .tabs-dropdown {
@@ -181,6 +187,12 @@
 @media (max-width: 640px) {
   .tabs-container {
     display: none;
+  }
+
+  .filter-bar {
+    padding: 1rem;
+    background-color: inherit;
+    margin-bottom: 0;
   }
   
   .tabs-dropdown {

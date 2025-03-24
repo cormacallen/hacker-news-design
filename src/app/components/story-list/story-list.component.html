@@ -1,45 +1,43 @@
-<div class="story-list-container">
-  <!-- Filter bar with tabs -->
-  <header class="filter-bar">
-    <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
-      <div class="tabs" role="tablist">
-        @for (tab of tabs; track tab.id) {
-          <button
-            class="tab"
-            role="tab"
-            [disabled]="tabsDisabled() || activeTab() === tab.id"
-            [class.active]="activeTab() === tab.id"
-            [attr.aria-selected]="activeTab() === tab.id"
-            [attr.aria-controls]="'tab-content-' + tab.id"
-            [id]="'tab-' + tab.id"
-            (click)="switchTab(tab.id)"
-            [attr.aria-label]="tab.ariaLabel"
-          >
-            <span>{{ tab.label }}</span>
-          </button>
-        }
-      </div>
-    </nav>
-
-    <!-- Mobile dropdown selector -->
-    <div class="tabs-dropdown">
-      <select
-        [ngModel]="activeTab()"
-        (ngModelChange)="switchTab($event)"
-        aria-label="Select story category"
-        class="tab-select"
-        [disabled]="tabsDisabled()"
-      >
-        @for (tab of tabs; track tab.id) {
-          <option [value]="tab.id">{{ tab.label }}</option>
-        }
-      </select>
-      <span class="material-icons dropdown-icon" aria-hidden="true"
-        >arrow_drop_down</span
-      >
+<header class="filter-bar">
+  <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
+    <div class="tabs" role="tablist">
+      @for (tab of tabs; track tab.id) {
+        <button
+          class="tab"
+          role="tab"
+          [disabled]="tabsDisabled() || activeTab() === tab.id"
+          [class.active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          [attr.aria-controls]="'tab-content-' + tab.id"
+          [id]="'tab-' + tab.id"
+          (click)="switchTab(tab.id)"
+          [attr.aria-label]="tab.ariaLabel"
+        >
+          <span>{{ tab.label }}</span>
+        </button>
+      }
     </div>
-  </header>
+  </nav>
 
+  <!-- Mobile dropdown selector -->
+  <div class="tabs-dropdown">
+    <select
+      [ngModel]="activeTab()"
+      (ngModelChange)="switchTab($event)"
+      aria-label="Select story category"
+      class="tab-select"
+      [disabled]="tabsDisabled()"
+    >
+      @for (tab of tabs; track tab.id) {
+        <option [value]="tab.id">{{ tab.label }}</option>
+      }
+    </select>
+    <span class="material-icons dropdown-icon" aria-hidden="true"
+      >arrow_drop_down</span
+    >
+  </div>
+</header>
+<div class="story-list-container">
   <div
     class="tab-content"
     [attr.aria-labelledby]="'tab-' + activeTab()"
