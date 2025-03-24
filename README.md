@@ -34,11 +34,6 @@ A modern, accessible redesign of Hacker News built with Angular 19, utilizing th
 
 ## Development
 
-### Prerequisites
-
-- Node.js (v18+)
-- npm (v9+)
-
 ### Installation
 
 npm install
