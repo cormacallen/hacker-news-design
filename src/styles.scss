@@ -33,23 +33,26 @@
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+
+  --brand-color: #ff6600;
 }
 
 /* Light Theme Colors */
 .light-theme {
   /* Base colors */
-  --bg-color: #f8f9fa;
+  --bg-color: #F3F4F5;
   --card-bg: #ffffff;
   --header-bg: rgba(255, 255, 255, 0.85);
-  --footer-bg: #f3f4f6;
+  --footer-bg: #ffffff;
   --hover-bg: #f1f5f9;
   --text-color: #1e293b;
-  --text-muted: #64748b;
+  --text-muted: #5a687d;
   
   /* Accent colors */
-  --accent-color: #ff6600;
+  --accent-color: #d8392b;
   --accent-color-hover: #e65c00;
   --accent-bg: rgba(255, 102, 0, 0.1);
+  --text-against-accent: #ffffff;
   
   /* Utility colors */
   --border-color: #e2e8f0;
@@ -75,9 +78,10 @@
   --text-muted: #9ca3af;
   
   /* Accent colors */
-  --accent-color: #ff6600;
+  --accent-color: #ff8533;
   --accent-color-hover: #ff8533;
   --accent-bg: rgba(255, 102, 0, 0.15);
+  --text-against-accent: #000000;
   
   /* Utility colors */
   --border-color: #374151;

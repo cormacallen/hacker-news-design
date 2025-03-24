@@ -40,6 +40,15 @@
     text-decoration: none;
     color: var(--text-color);
   }
+
+  .logo-icon {
+    rect {
+      fill: var(--accent-color);
+    }
+    path {
+      fill: var(--text-against-accent);
+    }
+  }
   
   .logo-text {
     font-size: 1.25rem;

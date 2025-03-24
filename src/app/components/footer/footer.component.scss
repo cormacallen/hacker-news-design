@@ -32,20 +32,14 @@
   }
   
   .footer-links a {
-    color: var(--accent-color);
+    color: var(--text-color);
     font-size: 0.875rem;
-    text-decoration: none;
-  }
-  
-  .footer-links a:hover {
     text-decoration: underline;
   }
   
   a {
     color: var(--accent-color);
     text-decoration: none;
-  }
-  
-  a:hover {
+    filter: brightness(90%); /* Darkens the color for contrast */
     text-decoration: underline;
   }

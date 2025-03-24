@@ -87,9 +87,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
         }
         this.loadStories();
       });
-
-    // Set page title based on active tab
-    this.updatePageTitle();
   }
 
   ngOnDestroy(): void {
@@ -128,7 +125,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.error.set(null);
     this.hasMoreStories.set(true);
     this.tabsDisabled.set(true); // Disable tabs while loading
-    this.updatePageTitle();
 
     // Update the URL without reloading
     this.router.navigate(['/stories', tab], { replaceUrl: true });
@@ -184,6 +180,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.error.set(null);
             this.tabsDisabled.set(false); // Re-enable tabs once data is loaded
           }
+          this.updatePageTitle();
         },
         error: (err) => {
           // Only update if current tab hasn't changed during request

@@ -5,12 +5,12 @@ export const routes: Routes = [
   {
     path: '',
     component: StoryListComponent,
-    title: 'Hacker News Redesigned - Top Stories',
+    title: 'Hacker News - Top Stories',
   },
   {
     path: 'stories/:type',
     component: StoryListComponent,
-    title: 'Hacker News Redesigned',
+    title: 'Hacker News',
   },
   {
     path: '**',
