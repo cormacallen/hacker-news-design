@@ -1,4 +1,7 @@
 <header class="filter-bar">
+  <h1 class="visually-hidden">
+    {{ getCurrentTabLabel() }} Stories | Hacker News
+  </h1>
   <nav class="tabs-container" aria-label="Story categories" #tabsContainer>
     <div class="tabs" role="tablist">
       @for (tab of tabs; track tab.id) {
@@ -37,6 +40,7 @@
     >
   </div>
 </header>
+
 <div class="story-list-container">
   <div
     class="tab-content"

@@ -130,6 +130,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
     // Fetch stories for the new tab
     this.loadStories();
+    setTimeout(() => {
+      this.updatePageTitle();
+    });
   }
 
   /**
