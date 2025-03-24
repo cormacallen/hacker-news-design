@@ -6,12 +6,7 @@
   <div class="story-content">
     <header class="story-header">
       <h2 class="story-title" [id]="'story-title-' + story().id">
-        <a
-          [href]="storyUrl()"
-          target="_blank"
-          rel="noopener"
-          [attr.aria-label]="story().title"
-        >
+        <a [href]="storyUrl()" class="story-link">
           {{ story().title }}
         </a>
       </h2>
@@ -37,8 +32,6 @@
       <a
         class="story-comments"
         [href]="commentsUrl()"
-        target="_blank"
-        rel="noopener"
         [attr.aria-label]="storyCommentsLabel()"
       >
         <span class="material-icons icon" aria-hidden="true">comment</span>
