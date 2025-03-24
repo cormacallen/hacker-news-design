@@ -49,17 +49,14 @@ npm install
 
 npm start
 
-````
-
 The application will be available at `http://localhost:4200`.
 
 ### Testing
 
-```bash
 # Run unit tests
+
 npm test
 
 # Run end-to-end tests
-npm run e2e
 
-````
+npm run e2e
