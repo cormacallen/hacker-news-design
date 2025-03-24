@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
@@ -10,4 +10,12 @@ import { SearchComponent } from '../search/search.component';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  // Signal for tracking mobile search visibility
+  isMobileSearchVisible = signal(false);
+
+  // Toggle mobile search visibility
+  toggleMobileSearch(): void {
+    this.isMobileSearchVisible.update((isVisible) => !isVisible);
+  }
+}

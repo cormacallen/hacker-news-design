@@ -17,11 +17,21 @@
       </a>
     </div>
 
-    <div class="header-center-search">
+    <div class="header-center">
       <app-search></app-search>
     </div>
 
     <div class="header-right">
+      <!-- Mobile search toggle button -->
+      <button
+        class="mobile-search-toggle"
+        aria-label="Toggle search"
+        title="Search"
+        (click)="toggleMobileSearch()"
+      >
+        <span class="material-icons" aria-hidden="true">search</span>
+      </button>
+
       <button class="login-button" aria-label="Login" title="Login">
         <span class="material-icons" aria-hidden="true">login</span>
         <span class="login-text">Login</span>
@@ -29,5 +39,14 @@
 
       <app-theme-toggle></app-theme-toggle>
     </div>
+  </div>
+
+  <!-- Mobile search container (hidden by default) -->
+  <div
+    class="mobile-search-container"
+    [class.is-active]="isMobileSearchVisible()"
+    [attr.aria-hidden]="!isMobileSearchVisible()"
+  >
+    <app-search></app-search>
   </div>
 </header>
