@@ -202,7 +202,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
                 firstNewStory.setAttribute('tabindex', '-1');
                 (firstNewStory as HTMLElement).focus();
               }
-            }, 0);
+            }, 10);
           }
           this.updatePageTitle();
         },
