@@ -187,7 +187,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.tabsDisabled.set(false); // Re-enable tabs once data is loaded
 
             // Handle focus for screen readers on load more
-            // After render, add an ID to the first new story
             if (loadMore) {
               setTimeout(() => {
                 const newStoryElements =
