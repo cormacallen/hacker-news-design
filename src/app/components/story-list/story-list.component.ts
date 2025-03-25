@@ -146,6 +146,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
       this.loading.set(true);
       this.currentPage.set(1);
     } else {
+      // get focused element before loading more stories
       this.loadingMore.set(true);
     }
 
@@ -165,6 +166,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
         next: (newStories) => {
           // Only update if current tab hasn't changed during request
           if (currentTab === this.activeTab()) {
+            // Get the current length before adding new stories
+            const startIndex = this.stories().length;
+
             if (loadMore) {
               // Append new stories to existing ones
               this.stories.update((stories) => [...stories, ...newStories]);
@@ -181,6 +185,24 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.loadingMore.set(false);
             this.error.set(null);
             this.tabsDisabled.set(false); // Re-enable tabs once data is loaded
+
+            // Handle focus for screen readers
+            // After render, add an ID to the first new story
+            setTimeout(() => {
+              const newStoryElements = document.querySelectorAll('.story-item');
+
+              if (newStoryElements.length > startIndex) {
+                // Get the first new story element
+                const firstNewStory = newStoryElements[startIndex];
+
+                // Set an ID we can target
+                firstNewStory.id = 'first-new-story';
+
+                // Set focus to it
+                firstNewStory.setAttribute('tabindex', '-1');
+                (firstNewStory as HTMLElement).focus();
+              }
+            }, 0);
           }
           this.updatePageTitle();
         },

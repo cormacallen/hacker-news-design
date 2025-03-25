@@ -27,9 +27,14 @@
     border-right: none;
     border-radius: 8px 0 0 8px;
     background-color: var(--card-bg);
-    color: var(--text-color);
+    color: var(--text-color); 
     font-size: 0.9rem;
     outline: none;
+  }
+
+  input.search-input:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
   }
   
   .search-input::placeholder {

@@ -9,6 +9,11 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.story-item:focus {
+  outline: none; 
+  box-shadow: 0 0 0 2px var(--focus-color); 
+}
+
 .story-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--card-shadow-hover);
