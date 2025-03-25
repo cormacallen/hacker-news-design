@@ -107,7 +107,8 @@
         "cypress-run": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "hacker-news:serve"
+            "devServerTarget": "hacker-news:serve",
+            "tsConfig": "cypress/tsconfig.json"
           },
           "configurations": {
             "production": {
