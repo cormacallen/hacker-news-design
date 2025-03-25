@@ -186,23 +186,23 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.error.set(null);
             this.tabsDisabled.set(false); // Re-enable tabs once data is loaded
 
-            // Handle focus for screen readers
+            // Handle focus for screen readers on load more
             // After render, add an ID to the first new story
-            setTimeout(() => {
-              const newStoryElements = document.querySelectorAll('.story-item');
+            if (loadMore) {
+              setTimeout(() => {
+                const newStoryElements =
+                  document.querySelectorAll('.story-item');
 
-              if (newStoryElements.length > startIndex) {
-                // Get the first new story element
-                const firstNewStory = newStoryElements[startIndex];
+                if (newStoryElements.length > startIndex) {
+                  // Get the first new story element
+                  const firstNewStory = newStoryElements[startIndex];
 
-                // Set an ID we can target
-                firstNewStory.id = 'first-new-story';
-
-                // Set focus to it
-                firstNewStory.setAttribute('tabindex', '-1');
-                (firstNewStory as HTMLElement).focus();
-              }
-            }, 10);
+                  // Set focus to it
+                  firstNewStory.setAttribute('tabindex', '-1');
+                  (firstNewStory as HTMLElement).focus();
+                }
+              }, 10);
+            }
           }
           this.updatePageTitle();
         },
